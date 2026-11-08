@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="connect-src 'self' blob: data:; form-action 'none'; base-uri 'self'">
+<script>/* 体験版:保存場所を本番と分ける(名前の前に taiken- を付ける)・本物のフォルダにつながない */
+(function(){var P='taiken-';try{var S=Storage.prototype,g=S.getItem,s=S.setItem,r=S.removeItem,k=S.key,L=Object.getOwnPropertyDescriptor(S,'length').get;
+function own(st){var a=[],n=L.call(st);for(var i=0;i<n;i++){var x=k.call(st,i);if(x&&x.indexOf(P)===0)a.push(x.slice(P.length));}return a;}
+S.getItem=function(x){return g.call(this,P+x);};S.setItem=function(x,v){return s.call(this,P+x,v);};S.removeItem=function(x){return r.call(this,P+x);};
+S.key=function(i){var a=own(this);return i<a.length?a[i]:null;};S.clear=function(){var t=this;own(t).forEach(function(x){r.call(t,P+x);});};
+Object.defineProperty(S,'length',{configurable:true,get:function(){return own(this).length;}});
+window.__taikenReset=function(){[localStorage,sessionStorage].forEach(function(st){var n=L.call(st),ks=[];for(var i=0;i<n;i++){var x=k.call(st,i);if(x&&x.indexOf(P)===0)ks.push(x);}ks.forEach(function(x){r.call(st,x);});});};}catch(e){}
+try{var F=IDBFactory.prototype,o=F.open,d=F.deleteDatabase;F.open=function(n,v){return v===undefined?o.call(this,P+n):o.call(this,P+n,v);};F.deleteDatabase=function(n){return d.call(this,P+n);};
+var old=window.__taikenReset;window.__taikenReset=function(){if(old)old();try{if(indexedDB.databases)return indexedDB.databases().then(function(l){l.forEach(function(x){if(x.name&&x.name.indexOf(P)===0)d.call(indexedDB,x.name);});});}catch(e){}};}catch(e){}
+try{delete window.showDirectoryPicker;window.showDirectoryPicker=undefined;}catch(e){}
+})();</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【体験版】クラス美術館（画面の見本）</title>
+<style>
+:root{
+  --wall:#FBFAF6; --floor:#E9E2D3; --ink:#22305A; --soft:#5A6789; --line:#D9D3C4;
+  --go:#2E7DD7; --go-sh:#1C58A3; --gold:#C9A24A; --frame:#6E4B2E; --mat:#FFFFFF;
+  --tag:#FFF4C9; --pink:#F6DDD6; --pink-ink:#8A2F1A;
+  --font:"Hiragino Maru Gothic ProN","BIZ UDPGothic","Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;
+  --head:"Hiragino Mincho ProN","BIZ UDPMincho","Yu Mincho",serif;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font);color:var(--ink);background:var(--wall);line-height:1.7}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid #F2A900;outline-offset:2px;border-radius:6px}
+.demo-bar{background:#22305A;color:#fff;font-size:13px;padding:6px 14px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
+.demo-bar .who{display:flex;gap:4px;align-items:center}
+.demo-bar .who button{background:transparent;border:1px solid rgba(255,255,255,.5);color:#fff;border-radius:999px;padding:1px 12px;font-size:13px}
+.demo-bar .who button[aria-pressed="true"]{background:#fff;color:#22305A;font-weight:700}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;border-bottom:1px solid var(--line);background:#fff}
+.logo{font-family:var(--head);font-weight:700;font-size:20px;display:flex;gap:10px;align-items:center;background:none;border:0;padding:0}
+.logo svg{width:30px;height:30px}
+.back{background:none;border:1px solid var(--line);border-radius:999px;padding:3px 14px;font-size:14px}
+main{max-width:1040px;margin:0 auto;padding:22px 18px 60px}
+h1,h2{font-family:var(--head);margin:0;line-height:1.4}
+.go{background:var(--go);color:#fff;border:0;border-radius:14px;padding:12px 22px;font-weight:700;font-size:17px;box-shadow:0 4px 0 var(--go-sh)}
+.go:active{transform:translateY(3px);box-shadow:0 1px 0 var(--go-sh)}
+.chip{display:inline-block;font-size:12px;font-weight:700;padding:0 9px;border-radius:6px;background:var(--tag)}
+.muted{color:var(--soft)}
+.note{font-size:13px;color:var(--soft);border:2px dotted var(--line);border-radius:10px;padding:8px 12px;margin-top:14px}
+
+/* ロビー */
+.lobby{text-align:center;padding:20px 0 10px}
+.lobby .gate{display:inline-block;padding:26px 28px 18px;border:3px solid var(--ink);border-bottom:0;border-radius:120px 120px 0 0;min-width:min(520px,100%)}
+.lobby .gate p{margin:0;font-size:13px;letter-spacing:.2em;color:var(--soft)}
+.lobby h1{font-size:clamp(28px,6vw,42px);letter-spacing:.08em}
+.lobby .floor{height:14px;background:var(--floor);border-radius:0 0 8px 8px;max-width:620px;margin:0 auto}
+.special{margin:24px auto 0;max-width:620px;display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:center;text-align:left;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px}
+.special .poster{aspect-ratio:3/4;border-radius:8px;background:#22305A;color:#fff;display:grid;place-items:center;font-family:var(--head);font-size:20px;text-align:center;padding:10px;line-height:1.4}
+.rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:26px}
+.room{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:6px}
+.room:hover{border-color:var(--go)}
+.room .door{height:70px;border-radius:40px 40px 6px 6px;display:grid;place-items:center;font-size:30px}
+.room b{font-size:17px}
+.mine-btn{margin-top:22px}
+@media (max-width:560px){.special{grid-template-columns:1fr}.special .poster{max-width:180px;margin:0 auto}}
+
+/* 展示室 */
+.room-head{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;justify-content:space-between}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tabs button{background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px 14px;font-size:14px}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.hall{margin-top:16px;border-radius:14px;padding:26px 18px 0;background:var(--wallc,#fff);border:1px solid var(--line);position:relative}
+.hall::after{content:"";display:block;height:16px;margin:0 -18px;background:var(--floor);border-radius:0 0 14px 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--min,170px),1fr));gap:var(--gap,26px) 22px;padding-bottom:24px}
+.piece{background:none;border:0;padding:0;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
+.frame{width:100%;background:var(--frame);padding:9px;border-radius:3px;box-shadow:0 10px 16px -10px rgba(0,0,0,.5)}
+.frame.gold{background:linear-gradient(135deg,#E2C477,#B88A2E 60%,#E2C477)}
+.frame .matt{background:var(--mat);padding:9px}
+.frame svg{display:block;width:100%;height:auto}
+.plate{font-size:12.5px;background:#fff;border:1px solid var(--line);border-radius:4px;padding:1px 10px;line-height:1.6;max-width:100%}
+.plate b{font-size:13.5px}
+.piece:hover .frame{transform:translateY(-3px)}
+.lock{white-space:nowrap;font-size:11px;color:var(--pink-ink);background:var(--pink);border-radius:4px;padding:0 6px}
+
+/* 詳細 */
+.detail{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:760px){.detail{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.card + .card{margin-top:14px}
+.card h3{margin:0 0 6px;font-size:15px;color:var(--soft)}
+.voice{background:#F4FAF8;border-radius:12px;padding:10px 14px;font-size:15px}
+.stamps{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.stamps button{background:#fff;border:2px solid var(--line);border-radius:12px;padding:8px;display:flex;gap:8px;align-items:center;justify-content:center;font-weight:700}
+.stamps button[aria-pressed="true"]{border-color:var(--go);background:#EAF3FD}
+.stamps .n{font-size:12px;color:var(--soft);font-weight:400}
+.msg{display:flex;gap:8px;margin-top:10px}
+.msg select{flex:1;font:inherit;padding:6px;border-radius:10px;border:1px solid var(--line)}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}
+.compare p{margin:4px 0 0;font-size:13px;text-align:center}
+
+/* 自分の部屋の設定 */
+.settings{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-size:14px}
+.swatch{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);padding:0}
+.swatch[aria-pressed="true"]{outline:3px solid var(--go);outline-offset:2px}
+
+/* 先生 */
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:620px;background:#fff}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:middle}
+th{background:#F4F1E8;white-space:nowrap}
+.tw{overflow-x:auto;margin-top:10px}
+td select{font:inherit;font-size:13px;padding:3px;border-radius:8px;border:1px solid var(--line)}
+.thumb{width:56px}
+.thumb svg{width:56px;height:auto;display:block;border:3px solid var(--frame)}
+.tsec{margin-top:26px}
+.tsec h2{font-size:20px}
+.form{display:grid;gap:8px;max-width:520px;margin-top:10px}
+.form input{font:inherit;padding:6px 10px;border-radius:10px;border:1px solid var(--line)}
+.picks{display:flex;flex-wrap:wrap;gap:6px}
+.picks label{font-size:13px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:1px 10px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:8px 18px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.piece:hover .frame{transform:none}.toast{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="demo-bar">
+  <span>画面の見本（ダミー作品・保存しません）</span>
+  <span class="who" role="group" aria-label="つかう人"><span>つかう人：</span>
+    <button type="button" data-role="child" aria-pressed="true">児童</button>
+    <button type="button" data-role="teacher" aria-pressed="false">先生</button>
+    <button type="button" data-role="parent" aria-pressed="false">保護者</button>
+  </span>
+</div>
+
+<header class="top">
+  <button class="logo" type="button" data-go="lobby" aria-label="ロビーへ">
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 12 16 4l13 8z"/><path d="M6 13v12M12 13v12M20 13v12M26 13v12M3 27h26"/></svg>
+    <span id="hall-name">クラス びじゅつかん</span>
+  </button>
+  <button class="back" type="button" id="back" hidden>← もどる</button>
+</header>
+
+<main id="view"></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+/* ===== ダミーデータ（すべて架空） ===== */
+var ME = "a3"; // 児童として見るときの「わたし」
+var KIDS = {a1:"ひまわり",a2:"そらまめ",a3:"きらきら",a4:"どんぐり",a5:"ぺんぎん",a6:"いちご",a7:"ほしぞら",a8:"くじら"};
+var SUBJECTS = [
+  {id:"zuko",name:"ずこう",icon:"🎨",col:"#FDE7D2"},
+  {id:"shosha",name:"しょしゃ",icon:"🖌️",col:"#E5ECF6"},
+  {id:"ondoku",name:"おんどくげき",icon:"🎭",col:"#EDE6F7"},
+  {id:"poster",name:"ポスター",icon:"📜",col:"#E3F1E6"}
+];
+var TERMS = ["1がっき","2がっき","3がっき"];
+var STAMPS = [["すてき","✨"],["まねしたい","👀"],["いろが きれい","🌈"],["がんばったね","💪"]];
+var WORDS = ["いろの くみあわせが すき","ていねいに かいてるね","わたしも やってみたい","ここの かたちが おもしろい"];
+var VOICES = {
+  zuko:["いろを まぜるのが たのしかった。","おおきく かけた。つぎは こまかく かきたい。","すきな いろを いっぱい つかった。"],
+  shosha:["はねと はらいを ゆっくり かいた。","まえより まっすぐ かけた。","とめを きをつけた。"],
+  ondoku:["こえの おおきさを かえて よんだ。","ともだちと タイミングを あわせた。"],
+  poster:["みんなに つたわる ように おおきな じに した。","しらべた ことを 3つ かいた。"]
+};
+function rng(seed){var s=seed;return function(){s=(s*9301+49297)%233280;return s/233280;};}
+var WORKS=[];
+(function build(){
+  var r=rng(7), id=1, ids=Object.keys(KIDS);
+  var plan=[["zuko",0,"わたしの すきな もの"],["shosha",0,"ひらがな「あ」"],["zuko",1,"あきの はっぱ"],["ondoku",1,"おおきな かぶ（おんどくげき）"],["shosha",1,"かんじ「山」"],["poster",2,"がっこうの まわりの しごと"],["zuko",2,"6ねんせいへの ありがとう"]];
+  plan.forEach(function(p){
+    ids.forEach(function(k,i){
+      if(p[0]==="ondoku"&&i%2) return; // 劇はグループで1つ
+      var v=VOICES[p[0]];
+      WORKS.push({id:id++,kid:k,subj:p[0],term:p[1],title:p[2],seed:Math.floor(r()*100000),
+        date:["5/","6/","10/","11/","1/","2/","3/"][plan.indexOf(p)]+(10+Math.floor(r()*18)),
+        voice:v[Math.floor(r()*v.length)], scope:(r()<.15?"private":(r()<.45?"parent":"class")),
+        stamps:STAMPS.map(function(){return Math.floor(r()*6);}), my:null});
+    });
+  });
+})();
+var SPECIALS=[{name:"1がっきの しょしゃてん",subj:"shosha",term:0,scope:"parent"}];
+var COMMENTS=[{w:3,from:"a5",text:"いろの くみあわせが すき",show:true},{w:10,from:"a1",text:"ていねいに かいてるね",show:true},{w:17,from:"a7",text:"わたしも やってみたい",show:true}];
+var state={role:"child",view:"lobby",subj:"zuko",term:null,work:null,history:[],myLayout:"line",myWall:"#FFFFFF"};
+
+/* ===== 架空の作品をプログラムで描く ===== */
+var PAL=["#E85D4F","#F2A93B","#F5D547","#6CC070","#3FA7D6","#7C6FD6","#E58BB8","#8D6E4F"];
+function art(w){
+  var r=rng(w.seed), c=function(){return PAL[Math.floor(r()*PAL.length)];}, s='';
+  if(w.subj==="zuko"){
+    s+='<rect width="300" height="220" fill="'+(r()<.5?"#FFF8E7":"#EAF6FF")+'"/>';
+    for(var i=0;i<7;i++){var x=r()*300,y=r()*220,rr=14+r()*46;
+      s+= r()<.5 ? '<circle cx="'+x.toFixed(0)+'" cy="'+y.toFixed(0)+'" r="'+rr.toFixed(0)+'" fill="'+c()+'" opacity=".85"/>'
+                 : '<path d="M'+x.toFixed(0)+' '+y.toFixed(0)+' q'+(r()*80-40).toFixed(0)+' '+(-rr).toFixed(0)+' '+(rr*1.6).toFixed(0)+' 0 t'+(rr).toFixed(0)+' '+(r()*30).toFixed(0)+'" stroke="'+c()+'" stroke-width="'+(6+r()*10).toFixed(0)+'" fill="none" stroke-linecap="round"/>';}
+    s+='<path d="M0 190 Q150 '+(160+r()*30).toFixed(0)+' 300 195 V220 H0z" fill="'+c()+'" opacity=".7"/>';
+    return svg(300,220,s);
+  }
+  if(w.subj==="shosha"){
+    var ch=w.title.indexOf("山")>=0?"山":"あ";
+    s+='<rect width="200" height="270" fill="#FFFDF7"/><rect x="10" y="10" width="180" height="250" fill="none" stroke="#E7DCC8"/>';
+    s+='<text x="100" y="175" font-size="'+(120+Math.floor(r()*20))+'" text-anchor="middle" font-family="\'Yu Mincho\',\'Hiragino Mincho ProN\',serif" font-weight="700" fill="#1B1B1B" transform="rotate('+(r()*6-3).toFixed(1)+' 100 135)">'+ch+'</text>';
+    s+='<text x="170" y="245" font-size="13" text-anchor="middle" fill="#333" font-family="serif" writing-mode="tb">'+KIDS[w.kid]+'</text>';
+    return svg(200,270,s);
+  }
+  if(w.subj==="ondoku"){
+    s+='<rect width="300" height="200" fill="#2B2440"/><path d="M0 0h300v30c-40 12-60 0-75 0s-35 12-75 12S115 30 75 30 15 42 0 30z" fill="#9B2C3E"/>';
+    s+='<ellipse cx="150" cy="185" rx="130" ry="14" fill="#5A4A3A"/>';
+    for(var j=0;j<3;j++){var px=80+j*70;s+='<circle cx="'+px+'" cy="120" r="14" fill="'+c()+'"/><rect x="'+(px-12)+'" y="136" width="24" height="36" rx="10" fill="'+c()+'"/>';}
+    s+='<circle cx="150" cy="80" r="22" fill="rgba(255,255,255,.9)"/><path d="M143 68v24l20-12z" fill="#2B2440"/>';
+    return svg(300,200,s);
+  }
+  s+='<rect width="210" height="280" fill="'+c()+'" opacity=".25"/><rect x="14" y="14" width="182" height="54" rx="6" fill="'+c()+'"/>';
+  s+='<text x="105" y="50" font-size="20" text-anchor="middle" fill="#fff" font-weight="700" font-family="sans-serif">しごと しらべ</text>';
+  for(var k=0;k<3;k++){var yy=88+k*62;s+='<rect x="18" y="'+yy+'" width="46" height="46" rx="23" fill="'+c()+'"/><rect x="74" y="'+(yy+8)+'" width="118" height="8" rx="4" fill="#555" opacity=".5"/><rect x="74" y="'+(yy+24)+'" width="'+(60+r()*50).toFixed(0)+'" height="8" rx="4" fill="#555" opacity=".35"/>';}
+  return svg(210,280,s);
+}
+function svg(w,h,inner){return '<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="架空の作品のイメージ">'+inner+'</svg>';}
+
+/* ===== 表示の決まり ===== */
+function visible(w){
+  if(state.role==="teacher") return true;
+  if(state.role==="parent") return w.scope==="parent" || SPECIALS.some(function(sp){return sp.scope==="parent"&&sp.subj===w.subj&&sp.term===w.term;});
+  return w.scope!=="private" || w.kid===ME;
+}
+function subj(id){return SUBJECTS.filter(function(s){return s.id===id;})[0];}
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function piece(w){
+  var lock = state.role!=="child"||w.kid!==ME ? "" : (w.scope==="private"?' <span class="lock">ひこうかい</span>':"");
+  return '<button class="piece" type="button" data-work="'+w.id+'"><div class="frame'+(w.subj==="shosha"?"":" gold")+'"><div class="matt">'+art(w)+'</div></div>'+
+    '<span class="plate"><b>'+esc(w.title)+'</b><br>'+esc(KIDS[w.kid])+' ・ '+w.date+lock+'</span></button>';
+}
+function toast(t){var el=document.getElementById("toast");el.textContent=t;el.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(function(){el.classList.remove("on");},1800);}
+
+/* ===== 画面 ===== */
+var V={};
+V.lobby=function(){
+  var sp=SPECIALS[SPECIALS.length-1];
+  var h='<section class="lobby"><div class="gate"><p>WELCOME</p><h1>'+(state.role==="parent"?"ようこそ":"びじゅつかんへ ようこそ")+'</h1><p class="muted" style="letter-spacing:0;margin-top:6px">'+(state.role==="parent"?"先生が公開した作品と特別展をご覧いただけます。":"みんなの さくひんが かざって あるよ。")+'</p></div><div class="floor"></div>';
+  if(sp){h+='<div class="special"><div class="poster">とくべつてん<br>'+esc(sp.name)+'</div><div><span class="chip">いま ひらいています</span><h2 style="font-size:22px;margin-top:6px">'+esc(sp.name)+'</h2><p class="muted" style="margin:4px 0 12px">'+TERMS[sp.term]+'の '+subj(sp.subj).name+'の さくひん</p><button class="go" type="button" data-special="'+(SPECIALS.length-1)+'">はいる</button></div></div>';}
+  h+='</section>';
+  if(state.role!=="parent"){
+    h+='<h2 style="font-size:20px;margin-top:10px">てんじしつ</h2><div class="rooms">'+SUBJECTS.map(function(s){
+      var n=WORKS.filter(function(w){return w.subj===s.id&&visible(w);}).length;
+      return '<button class="room" type="button" data-room="'+s.id+'"><span class="door" style="background:'+s.col+'">'+s.icon+'</span><b>'+s.name+'の へや</b><span class="muted" style="font-size:13px">'+n+'さくひん</span></button>';}).join("")+'</div>';
+  }
+  if(state.role==="child") h+='<div class="mine-btn" style="text-align:center"><button class="go" type="button" data-go="mine">🖼️ じぶんの てんじしつ</button></div>';
+  if(state.role==="teacher") h+='<div class="mine-btn" style="text-align:center"><button class="go" type="button" data-go="teacher">⚙️ 先生の かんり画面</button></div>';
+  if(state.role==="parent") h+='<p class="note">保護者の画面では、先生が「保護者にも」にした作品と、保護者向けの特別展だけが表示されます。リアクションはできません（案）。</p>';
+  return h;
+};
+V.special=function(){
+  var sp=SPECIALS[state.special];
+  var list=WORKS.filter(function(w){return w.subj===sp.subj&&w.term===sp.term&&(state.role!=="child"||w.scope!=="private"||w.kid===ME);});
+  return '<div class="room-head"><div><span class="chip">とくべつてん</span><h1 style="font-size:26px;margin-top:4px">'+esc(sp.name)+'</h1></div><span class="muted">'+list.length+'さくひん</span></div>'+
+    '<div class="hall" style="--wallc:#F3EEE3"><div class="grid">'+list.map(piece).join("")+'</div></div>';
+};
+V.room=function(){
+  var s=subj(state.subj);
+  var list=WORKS.filter(function(w){return w.subj===s.id&&visible(w)&&(state.term===null||w.term===state.term);});
+  var tabs='<button type="button" data-term="all" aria-pressed="'+(state.term===null)+'">ぜんぶ</button>'+TERMS.map(function(t,i){return '<button type="button" data-term="'+i+'" aria-pressed="'+(state.term===i)+'">'+t+'</button>';}).join("");
+  return '<div class="room-head"><h1 style="font-size:26px">'+s.icon+' '+s.name+'の へや</h1><span class="muted">'+list.length+'さくひん</span></div>'+
+    '<div class="tabs" role="group" aria-label="がっき">'+tabs+'</div>'+
+    '<div class="hall" style="--wallc:'+s.col+'"><div class="grid">'+(list.length?list.map(piece).join(""):'<p class="muted">この がっきの さくひんは まだ ないよ。</p>')+'</div></div>';
+};
+V.work=function(){
+  var w=WORKS.filter(function(x){return x.id===state.work;})[0], s=subj(w.subj);
+  var mine=w.kid===ME&&state.role==="child";
+  var prev=WORKS.filter(function(x){return x.kid===w.kid&&x.subj===w.subj&&x.id<w.id;}).pop();
+  var h='<div class="detail"><div><div class="frame'+(w.subj==="shosha"?"":" gold")+'"><div class="matt">'+art(w)+'</div></div>';
+  if(w.subj==="ondoku") h+='<p class="note">本実装では、ここで音読劇の動画を再生します（見本では絵だけ）。</p>';
+  h+='</div><div><div class="card"><span class="chip">'+s.icon+' '+s.name+'</span><h1 style="font-size:24px;margin-top:6px">'+esc(w.title)+'</h1><p class="muted" style="margin:2px 0 0">'+esc(KIDS[w.kid])+' ・ '+TERMS[w.term]+' ・ '+w.date+'</p></div>';
+  h+='<div class="card"><h3>'+(mine?"つくった ときの わたし":"さくしゃの ふりかえり")+'</h3><div class="voice">「'+esc(w.voice)+'」</div></div>';
+  if(prev&&(mine||state.role==="teacher")){
+    h+='<div class="card"><h3>あのころの わたし と くらべる</h3><div class="compare"><div><div class="frame"><div class="matt">'+art(prev)+'</div></div><p>'+esc(prev.title)+'<br>'+prev.date+'</p></div><div><div class="frame gold"><div class="matt">'+art(w)+'</div></div><p>'+esc(w.title)+'<br>'+w.date+'</p></div></div><div class="voice" style="margin-top:10px">まえ：「'+esc(prev.voice)+'」<br>いま：「'+esc(w.voice)+'」</div></div>';
+  }
+  if(state.role==="child"){
+    h+='<div class="card"><h3>'+(mine?"とどいた リアクション":"リアクションを おくる")+'</h3><div class="stamps">'+STAMPS.map(function(st,i){
+      var n=w.stamps[i]+(w.my===i?1:0);
+      return '<button type="button" data-stamp="'+i+'" aria-pressed="'+(w.my===i)+'"'+(mine?' disabled':'')+'><span aria-hidden="true">'+st[1]+'</span>'+st[0]+' <span class="n">'+(mine?n:"")+'</span></button>';}).join("")+'</div>';
+    if(!mine) h+='<div class="msg"><select id="word" aria-label="ひとこと"><option value="">ひとこと（えらぶ）</option>'+WORDS.map(function(t){return '<option>'+t+'</option>';}).join("")+'</select><button class="go" type="button" id="send" style="padding:6px 16px;font-size:15px">おくる</button></div><p class="muted" style="font-size:12px;margin:6px 0 0">ひとことは 先生も みます。かずの くらべっこは しません。</p>';
+    h+='</div>';
+  }
+  if(state.role==="teacher"){
+    h+='<div class="card"><h3>公開範囲</h3>'+scopeSelect(w)+'</div>';
+  }
+  return h+'</div></div>';
+};
+V.mine=function(){
+  var list=WORKS.filter(function(w){return w.kid===ME;});
+  var walls=["#FFFFFF","#FDF1DC","#E3F1E6","#E5ECF6","#2E3448"];
+  return '<div class="room-head"><h1 style="font-size:26px">🖼️ '+KIDS[ME]+'の てんじしつ</h1><span class="muted">'+list.length+'さくひん</span></div>'+
+    '<div class="settings"><span>ならべかた：</span><span class="tabs" style="margin:0" role="group" aria-label="ならべかた"><button type="button" data-layout="line" aria-pressed="'+(state.myLayout==="line")+'">ゆったり</button><button type="button" data-layout="dense" aria-pressed="'+(state.myLayout==="dense")+'">ぎっしり</button><button type="button" data-layout="time" aria-pressed="'+(state.myLayout==="time")+'">あたらしい じゅん</button></span>'+
+    '<span>かべの いろ：</span>'+walls.map(function(c){return '<button class="swatch" type="button" data-wall="'+c+'" style="background:'+c+'" aria-label="かべの いろ '+c+'" aria-pressed="'+(state.myWall===c)+'"></button>';}).join("")+'</div>'+
+    '<div class="hall" style="--wallc:'+state.myWall+';--min:'+(state.myLayout==="dense"?"120px":"190px")+';--gap:'+(state.myLayout==="dense"?"14px":"30px")+'"><div class="grid">'+(state.myLayout==="time"?list.slice().reverse():list).map(piece).join("")+'</div></div>'+
+    '<p class="note">見本では、えらんだ設定は保存しません。BGM などを選べるようにするかは相談中です。</p>';
+};
+function scopeSelect(w){
+  return '<select data-scope="'+w.id+'" aria-label="公開範囲"><option value="class"'+(w.scope==="class"?" selected":"")+'>クラスのみ</option><option value="parent"'+(w.scope==="parent"?" selected":"")+'>保護者にも</option><option value="private"'+(w.scope==="private"?" selected":"")+'>非公開</option></select>';
+}
+V.teacher=function(){
+  var rows=WORKS.slice(0,24).map(function(w){
+    return '<tr><td class="thumb">'+art(w)+'</td><td><button type="button" class="back" data-work="'+w.id+'" style="border:0;padding:0;text-decoration:underline">'+esc(w.title)+'</button></td><td>'+esc(KIDS[w.kid])+'</td><td>'+subj(w.subj).name+'</td><td>'+TERMS[w.term]+'</td><td>'+scopeSelect(w)+'</td></tr>';}).join("");
+  var com=COMMENTS.map(function(c,i){var w=WORKS[c.w-1];return '<tr><td>'+esc(w.title)+'（'+esc(KIDS[w.kid])+'）</td><td>'+esc(KIDS[c.from])+'</td><td>'+esc(c.text)+'</td><td><button type="button" class="back" data-hide="'+i+'">'+(c.show?"ひょうじ中 → かくす":"かくし中 → もどす")+'</button></td></tr>';}).join("");
+  return '<h1 style="font-size:26px">⚙️ 先生の かんり画面</h1>'+
+    '<section class="tsec"><h2>作品と公開範囲</h2><p class="muted" style="margin:4px 0 0;font-size:14px">初期値は「クラスのみ」。保護者に見せるのは、作品ごとに許可したものだけ。登録時に、顔や名札が写っていないか確認します。</p><div class="tw"><table><thead><tr><th>作品</th><th>題名</th><th>作者</th><th>教科</th><th>時期</th><th>公開範囲</th></tr></thead><tbody>'+rows+'</tbody></table></div><p class="muted" style="font-size:12px">（見本では最初の24件だけ表示）</p></section>'+
+    '<section class="tsec"><h2>特別展を ひらく</h2><div class="form"><input id="spname" value="2がっきの ずこうてん" aria-label="特別展の名前"><div class="picks">'+SUBJECTS.map(function(s,i){return '<label><input type="radio" name="spsubj" value="'+s.id+'"'+(i===0?" checked":"")+'> '+s.name+'</label>';}).join("")+'</div><div class="picks">'+TERMS.map(function(t,i){return '<label><input type="radio" name="spterm" value="'+i+'"'+(i===1?" checked":"")+'> '+t+'</label>';}).join("")+'</div><label style="font-size:14px"><input type="checkbox" id="spparent" checked> 保護者にも公開する</label><button class="go" type="button" id="mkspecial">ひらく</button></div>'+
+    '<p class="muted" style="font-size:13px">いま ひらいている特別展：'+SPECIALS.map(function(s){return esc(s.name)+(s.scope==="parent"?"（保護者にも）":"（クラスのみ）");}).join("、")+'</p></section>'+
+    '<section class="tsec"><h2>ひとことの かくにん</h2><div class="tw"><table><thead><tr><th>作品</th><th>送った人</th><th>ひとこと</th><th>表示</th></tr></thead><tbody>'+com+'</tbody></table></div></section>';
+};
+
+/* ===== 画面の切りかえ ===== */
+function go(view,push){
+  if(push!==false) state.history.push({view:state.view,work:state.work,subj:state.subj,special:state.special});
+  state.view=view; render(); window.scrollTo(0,0);
+}
+function render(){
+  if(state.view==="teacher"&&state.role!=="teacher") state.view="lobby";
+  if(state.view==="mine"&&state.role!=="child") state.view="lobby";
+  if((state.view==="room")&&state.role==="parent") state.view="lobby";
+  if(state.view==="work"){var w=WORKS.filter(function(x){return x.id===state.work;})[0];if(!w||!visible(w)) state.view="lobby";}
+  document.getElementById("view").innerHTML=V[state.view]();
+  document.getElementById("back").hidden=state.view==="lobby";
+}
+document.addEventListener("click",function(e){
+  var t=e.target.closest("button"); if(!t) return;
+  if(t.dataset.role){state.role=t.dataset.role;document.querySelectorAll("[data-role]").forEach(function(b){b.setAttribute("aria-pressed",b===t);});state.history=[];state.view="lobby";render();toast({child:"児童",teacher:"先生",parent:"保護者"}[state.role]+"として 見ています");return;}
+  if(t.id==="back"){var h=state.history.pop()||{view:"lobby"};state.view=h.view;state.work=h.work;state.subj=h.subj||state.subj;state.special=h.special;render();return;}
+  if(t.dataset.go){state.history=t.dataset.go==="lobby"?[]:state.history;go(t.dataset.go,t.dataset.go!=="lobby");return;}
+  if(t.dataset.room){state.subj=t.dataset.room;state.term=null;go("room");return;}
+  if(t.dataset.special){state.special=+t.dataset.special;go("special");return;}
+  if(t.dataset.work){state.work=+t.dataset.work;go("work");return;}
+  if(t.dataset.term){state.term=t.dataset.term==="all"?null:+t.dataset.term;render();return;}
+  if(t.dataset.stamp){var w=WORKS.filter(function(x){return x.id===state.work;})[0];var i=+t.dataset.stamp;w.my=(w.my===i?null:i);render();if(w.my!==null)toast(STAMPS[i][1]+" "+STAMPS[i][0]+" を おくったよ");return;}
+  if(t.id==="send"){var v=document.getElementById("word").value;if(!v){toast("ひとことを えらんでね");return;}COMMENTS.push({w:state.work,from:ME,text:v,show:true});toast("おくったよ（先生も みます）");return;}
+  if(t.dataset.layout){state.myLayout=t.dataset.layout;render();return;}
+  if(t.dataset.wall){state.myWall=t.dataset.wall;render();return;}
+  if(t.dataset.hide){var c=COMMENTS[+t.dataset.hide];c.show=!c.show;render();return;}
+  if(t.id==="mkspecial"){var nm=document.getElementById("spname").value.trim()||"とくべつてん";SPECIALS.push({name:nm,subj:document.querySelector('[name="spsubj"]:checked').value,term:+document.querySelector('[name="spterm"]:checked').value,scope:document.getElementById("spparent").checked?"parent":"class"});render();toast("「"+nm+"」を ひらきました（ロビーに出ます）");return;}
+});
+document.addEventListener("change",function(e){
+  var s=e.target.closest("[data-scope]"); if(!s) return;
+  var w=WORKS.filter(function(x){return x.id===+s.dataset.scope;})[0]; w.scope=s.value;
+  toast("「"+w.title+"」（"+KIDS[w.kid]+"）を "+s.options[s.selectedIndex].text+" に しました");
+});
+/* 画面写真用：?role=teacher&view=work&work=3 のように直接ひらける */
+(function(){
+  var q={};location.search.replace(/^\?/,"").split("&").forEach(function(kv){if(kv){var p=kv.split("=");q[p[0]]=decodeURIComponent(p[1]||"");}});
+  if(q.role&&/^(child|teacher|parent)$/.test(q.role)){state.role=q.role;document.querySelectorAll("[data-role]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.role===q.role);});}
+  if(q.view&&V[q.view]) state.view=q.view;
+  if(q.work) state.work=+q.work;
+  if(q.subj) state.subj=q.subj;
+  if(q.special) state.special=+q.special;
+})();
+render();
+})();
+</script>
+<div id="taiken-bar" style="position:fixed;left:8px;bottom:8px;z-index:2147483000;display:flex;flex-wrap:wrap;align-items:center;gap:6px;max-width:calc(100vw - 16px);background:#FFF3C4;color:#4A3200;border:2px solid #C98A00;border-radius:12px;padding:4px 6px 4px 10px;font:700 12px/1.4 system-ui,sans-serif;box-shadow:0 2px 6px rgba(0,0,0,.2)">
+<span>体験版(架空のデータ・どこにも送りません)</span>
+<button type="button" id="taiken-reset" style="font:inherit;border:1px solid #C98A00;background:#fff;color:#4A3200;border-radius:999px;padding:1px 9px;cursor:pointer">はじめにもどす</button>
+<a href="../../apps.html#museum" style="color:#4A3200">説明へ</a>
+<button type="button" id="taiken-hide" aria-label="この帯をたたむ" style="font:inherit;border:0;background:none;color:#4A3200;cursor:pointer">×</button></div>
+<script>(function(){var b=document.getElementById('taiken-bar');document.getElementById('taiken-hide').onclick=function(){b.style.display='none';};
+document.getElementById('taiken-reset').onclick=function(){if(!confirm('体験版で入れたデータを消して、はじめの状態にもどします。よろしいですか?'))return;Promise.resolve(window.__taikenReset&&window.__taikenReset()).then(function(){location.hash='';location.reload();});};})();</script>
+</body>
+</html>

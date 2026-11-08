@@ -1,0 +1,1287 @@
+<!doctype html>
+<html lang="ja">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="connect-src 'self' blob: data:; form-action 'none'; base-uri 'self'">
+<script>/* 体験版:保存場所を本番と分ける(名前の前に taiken- を付ける)・本物のフォルダにつながない */
+(function(){var P='taiken-';try{var S=Storage.prototype,g=S.getItem,s=S.setItem,r=S.removeItem,k=S.key,L=Object.getOwnPropertyDescriptor(S,'length').get;
+function own(st){var a=[],n=L.call(st);for(var i=0;i<n;i++){var x=k.call(st,i);if(x&&x.indexOf(P)===0)a.push(x.slice(P.length));}return a;}
+S.getItem=function(x){return g.call(this,P+x);};S.setItem=function(x,v){return s.call(this,P+x,v);};S.removeItem=function(x){return r.call(this,P+x);};
+S.key=function(i){var a=own(this);return i<a.length?a[i]:null;};S.clear=function(){var t=this;own(t).forEach(function(x){r.call(t,P+x);});};
+Object.defineProperty(S,'length',{configurable:true,get:function(){return own(this).length;}});
+window.__taikenReset=function(){[localStorage,sessionStorage].forEach(function(st){var n=L.call(st),ks=[];for(var i=0;i<n;i++){var x=k.call(st,i);if(x&&x.indexOf(P)===0)ks.push(x);}ks.forEach(function(x){r.call(st,x);});});};}catch(e){}
+try{var F=IDBFactory.prototype,o=F.open,d=F.deleteDatabase;F.open=function(n,v){return v===undefined?o.call(this,P+n):o.call(this,P+n,v);};F.deleteDatabase=function(n){return d.call(this,P+n);};
+var old=window.__taikenReset;window.__taikenReset=function(){if(old)old();try{if(indexedDB.databases)return indexedDB.databases().then(function(l){l.forEach(function(x){if(x.name&&x.name.indexOf(P)===0)d.call(indexedDB,x.name);});});}catch(e){}};}catch(e){}
+try{delete window.showDirectoryPicker;window.showDirectoryPicker=undefined;}catch(e){}
+})();</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>【体験版】すすみノート 算数5年</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<!-- v3：本文は Windows 標準の BIZ UDPGothic を使い、読み込むWebフォントは見出し用の1つ・1太さだけにする -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700&display=swap">
+<style>
+/* v2：情報を「いまここ」中心に整理。背景とカードの差をはっきりさせ、1画面に1つのことだけ出す
+   v3：軽さ（部分更新）・児童の操作のしやすさ・画面どうしのやりとり */
+:root{
+  --bg:#EAEFF6; --surface:#FFFFFF; --surface2:#F3F6FA; --line:#D9E0EB;
+  --ink:#1B2437; --ink2:#4E5A71; --ink3:#838EA4;
+  --accent:#2457C5; --accentSoft:#E3EAFB; --accentInk:#FFFFFF;
+  --pen:#CF2F2A; --hl:#FFE56A;
+  --ok:#23804F; --okSoft:#DDF1E5; --warn:#966300; --warnSoft:#FCEFC8; --bad:#C2410C; --badSoft:#FCE3D7;
+  --shadow:0 1px 2px rgba(20,32,64,.06),0 3px 10px rgba(20,32,64,.06);
+  --fd:'Zen Maru Gothic','BIZ UDPGothic','Hiragino Maru Gothic ProN',sans-serif;
+  --fb:'BIZ UDPGothic','Hiragino Kaku Gothic ProN','Yu Gothic','Meiryo',sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0C111A; --surface:#182030; --surface2:#212A3B; --line:#2E394E;
+  --ink:#E8EDF6; --ink2:#AAB4C8; --ink3:#78849B;
+  --accent:#86A8FF; --accentSoft:#1F2C4C; --accentInk:#0C111A;
+  --pen:#FF7B70; --hl:#5C4F12;
+  --ok:#5BC48D; --okSoft:#153325; --warn:#E5B54A; --warnSoft:#362B0F; --bad:#FF8D5C; --badSoft:#3C2116;
+  --shadow:none; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0C111A; --surface:#182030; --surface2:#212A3B; --line:#2E394E;
+  --ink:#E8EDF6; --ink2:#AAB4C8; --ink3:#78849B;
+  --accent:#86A8FF; --accentSoft:#1F2C4C; --accentInk:#0C111A;
+  --pen:#FF7B70; --hl:#5C4F12;
+  --ok:#5BC48D; --okSoft:#153325; --warn:#E5B54A; --warnSoft:#362B0F; --bad:#FF8D5C; --badSoft:#3C2116;
+  --shadow:none; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.7}
+h1,h2,h3,h4{font-family:var(--fd);text-wrap:balance;margin:0;line-height:1.35}
+h2{font-size:1.4rem} h3{font-size:1.1rem} h4{font-size:1rem}
+p{margin:0}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--ink2)} .small{font-size:.86rem}
+.hint{font-size:.86rem;color:var(--ink2)}
+.hl{background:linear-gradient(transparent 55%,var(--hl) 55%)}
+.ok-t{color:var(--ok);font-weight:700} .bad-t{color:var(--bad);font-weight:700}
+.empty{color:var(--ink3);font-size:.9rem;padding:8px 0}
+
+/* ヘッダー */
+.top{position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+.top-in{max-width:1240px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+.brand{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.brand h1{font-size:1.3rem;color:var(--accent)}
+.brand .unit{font-size:.86rem;color:var(--ink2)}
+.lesson-pill{font-family:var(--fd);font-weight:700;font-size:.86rem;background:var(--hl);color:var(--ink);padding:1px 12px;border-radius:999px}
+.top-right{margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;border:1.5px solid var(--accent);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:5px 16px;font-weight:700;color:var(--accent)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accentInk)}
+.who{display:flex;align-items:center;gap:6px;font-size:.88rem}
+select,input[type=text],input[type=number],textarea{background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:7px 10px}
+select:focus,input:focus,textarea:focus{border-color:var(--accent);outline:none}
+textarea{width:100%;resize:vertical;min-height:90px}
+.proto{font-size:.74rem;color:var(--ink3);border:1px dashed var(--ink3);border-radius:6px;padding:1px 8px}
+
+/* 全体の配置 */
+.wrap{max-width:1240px;margin:0 auto;padding:20px 16px 80px;display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px}
+nav.tabs{display:flex;flex-direction:column;gap:4px;position:sticky;top:76px;align-self:start}
+nav.tabs button{display:flex;align-items:center;gap:10px;text-align:left;border:0;background:transparent;padding:10px 12px;border-radius:10px;font-family:var(--fd);font-weight:700;font-size:.98rem;color:var(--ink2)}
+nav.tabs .ic{font-size:1.2rem;width:1.5em;text-align:center}
+nav.tabs button:hover{background:var(--surface)}
+nav.tabs button[aria-current="page"]{background:var(--accent);color:var(--accentInk);box-shadow:var(--shadow)}
+main{min-width:0;display:flex;flex-direction:column;gap:16px}
+@media (max-width:860px){
+  .wrap{grid-template-columns:1fr;gap:14px;padding-top:12px}
+  nav.tabs{position:static;flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:2px}
+  nav.tabs button{flex:0 0 auto;white-space:nowrap;padding:8px 12px;font-size:.9rem;background:var(--surface)}
+}
+.pagehead{display:flex;align-items:center;gap:12px}
+.pagehead .pic{font-size:1.8rem;line-height:1}
+.pagehead p{color:var(--ink2);font-size:.92rem}
+
+/* カード */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;min-width:0;box-shadow:var(--shadow)}
+.card > h3{margin-bottom:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.box{border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--surface)}
+.box > h4{margin-bottom:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+.split{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:860px){.split{grid-template-columns:1fr}}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.stack{display:flex;flex-direction:column;gap:12px}
+
+/* ボタン・チップ */
+.btn{border:1.5px solid var(--accent);background:var(--accent);color:var(--accentInk);border-radius:10px;padding:7px 16px;font-weight:700}
+.btn.ghost{background:var(--surface);color:var(--accent)}
+.btn.sm{padding:3px 12px;font-size:.86rem;border-radius:8px}
+.btn.big{padding:10px 22px;font-size:1.05rem}
+.chip{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 13px;font-size:.9rem}
+button.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent);color:var(--accentInk);font-weight:700}
+.tag{display:inline-block;font-size:.76rem;padding:0 9px;border-radius:6px;background:var(--surface2);color:var(--ink2);font-weight:700;font-family:var(--fb)}
+.tag.k{background:var(--accentSoft);color:var(--accent)}
+.tag.t{background:var(--warnSoft);color:var(--warn)}
+.tag.s{background:var(--okSoft);color:var(--ok)}
+.tag.mis{background:var(--badSoft);color:var(--bad)}
+.sig{display:inline-flex;align-items:center;gap:5px;font-size:.84rem;font-weight:700;border-radius:999px;padding:1px 10px;white-space:nowrap}
+.sig.green{color:var(--ok);background:var(--okSoft)} .sig.yellow{color:var(--warn);background:var(--warnSoft)} .sig.red{color:var(--bad);background:var(--badSoft)}
+.dot{width:11px;height:11px;border-radius:50%;display:inline-block;flex:none}
+.dot.green{background:var(--ok)} .dot.yellow{background:var(--warn)} .dot.red{background:var(--bad)}
+.no{display:inline-block;min-width:1.6em;color:var(--ink3);font-size:.82em;font-variant-numeric:tabular-nums}
+
+/* ページ内の切りかえ */
+.subtabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;overflow-x:auto;box-shadow:var(--shadow)}
+.subtabs button{flex:1 0 auto;border:0;background:transparent;border-radius:9px;padding:8px 14px;font-family:var(--fd);font-weight:700;color:var(--ink2);white-space:nowrap}
+.subtabs button:hover{background:var(--surface2)}
+.subtabs button[aria-selected="true"]{background:var(--accentSoft);color:var(--accent)}
+
+/* ひらく・とじる */
+details.more{border:1.5px solid var(--line);border-radius:10px;background:var(--surface)}
+details.more > summary{cursor:pointer;padding:9px 14px;font-weight:700;font-size:.92rem;color:var(--ink2);list-style:none;display:flex;align-items:center;gap:8px}
+details.more > summary::-webkit-details-marker{display:none}
+details.more > summary::before{content:"▶";font-size:.7rem;color:var(--accent);transition:transform .15s}
+details.more[open] > summary::before{transform:rotate(90deg)}
+details.more > .in{padding:4px 14px 14px;display:flex;flex-direction:column;gap:10px}
+
+/* 分数 */
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.1;margin:0 2px;font-variant-numeric:tabular-nums}
+.fr span:first-child{border-bottom:1.5px solid currentColor;padding:0 3px}
+.fr span{font-size:.9em}
+
+/* いまここ */
+.nowcard{background:var(--surface);border:2px solid var(--accent);border-radius:16px;padding:16px 20px;display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:14px 28px;align-items:center;box-shadow:var(--shadow)}
+@media (max-width:760px){.nowcard{grid-template-columns:1fr}}
+.now-lbl{display:inline-block;font-family:var(--fd);font-weight:700;font-size:.82rem;background:var(--accent);color:var(--accentInk);border-radius:999px;padding:0 12px}
+.now-step{display:flex;align-items:baseline;gap:8px;margin:4px 0 6px}
+.now-num{font-family:var(--fd);font-weight:700;font-size:2.2rem;color:var(--accent);line-height:1}
+.now-name{font-family:var(--fd);font-weight:700;font-size:1.45rem}
+.now-sub{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.pill{font-size:.84rem;border-radius:999px;padding:1px 11px;background:var(--surface2);color:var(--ink2);font-weight:700}
+.stat{font-size:.84rem;border-radius:999px;padding:1px 11px;border:0;font-weight:700;background:var(--surface2);color:var(--ink2)}
+.stat.bad{background:var(--badSoft);color:var(--bad)} .stat.ok{background:var(--okSoft);color:var(--ok)}
+.stat:hover{text-decoration:underline}
+ol.track{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(8,minmax(0,1fr))}
+.track li{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
+.track li::before{content:"";position:absolute;top:17px;left:-50%;width:100%;height:4px;background:var(--line);z-index:0}
+.track li:first-child::before{display:none}
+.track li.done::before,.track li.cur::before{background:var(--accent)}
+.track .nd{position:relative;z-index:1;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-family:var(--fd);font-weight:700;background:var(--surface);border:2.5px solid var(--line);color:var(--ink3)}
+.track li.done .nd{background:var(--accent);border-color:var(--accent);color:var(--accentInk)}
+.track li.cur .nd{border-color:var(--accent);color:var(--accent);background:var(--hl);transform:scale(1.18);box-shadow:0 0 0 4px var(--accentSoft)}
+.track .sn{font-size:.7rem;color:var(--ink3);text-align:center;line-height:1.25;margin-top:4px;max-width:100%}
+.track li.cur .sn{color:var(--ink);font-weight:700}
+.track .flag{font-size:.68rem;font-weight:700;color:var(--pen);border:1.5px solid var(--pen);border-radius:5px;padding:0 4px;line-height:1.4}
+@media (max-width:560px){.track .sn{display:none}.track .nd{width:30px;height:30px;font-size:.85rem}.track li::before{top:14px}}
+
+/* きょうの流れ */
+.flowbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.flowbar button{display:flex;flex-direction:column;align-items:center;gap:3px;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 4px;font-family:var(--fd);font-weight:700;font-size:.86rem;color:var(--ink2);min-width:0}
+.flowbar .fn{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--surface2);color:var(--ink2)}
+.flowbar button.done .fn{background:var(--ok);color:#fff}
+.flowbar button[aria-current="step"]{background:var(--accent);border-color:var(--accent);color:var(--accentInk);box-shadow:var(--shadow)}
+.flowbar button[aria-current="step"] .fn{background:var(--accentInk);color:var(--accent)}
+.flowbar .fl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+@media (max-width:420px){.flowbar{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.panel{padding:20px 22px}
+.panel-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.pnum{width:34px;height:34px;border-radius:50%;background:var(--accent);color:var(--accentInk);display:grid;place-items:center;font-family:var(--fd);font-weight:700}
+.panel-h h3{font-size:1.25rem}
+.panel-nav{display:flex;justify-content:space-between;gap:8px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line);flex-wrap:wrap}
+.lead{font-size:1rem;color:var(--ink2);margin-bottom:12px}
+
+/* 1問テスト */
+.quizbox{background:var(--surface2);border-radius:12px;padding:18px 20px}
+.quizq{font-size:1.4rem;font-family:var(--fd);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ansbox{display:inline-flex;flex-direction:column;gap:3px;align-items:center}
+.ansbox input{width:64px;text-align:center;padding:4px;font-size:1.15rem}
+.ansbox hr{width:68px;border:0;border-top:2.5px solid var(--ink);margin:0}
+.result{margin-top:14px;font-family:var(--fd);font-weight:700;font-size:1.1rem;border-radius:10px;padding:8px 14px}
+.result.ok{background:var(--okSoft);color:var(--ok)} .result.bad{background:var(--badSoft);color:var(--bad)}
+.minibox{background:var(--surface2);border-left:6px solid var(--hl);border-radius:0 12px 12px 0;padding:18px 20px;font-size:1.25rem;font-family:var(--fd);font-weight:700;line-height:1.7}
+
+/* めあて */
+.quote{border-left:4px solid var(--hl);padding:6px 12px;background:var(--surface2);border-radius:0 8px 8px 0;font-size:.92rem}
+.gf-row{display:grid;grid-template-columns:100px minmax(0,1fr);gap:10px;align-items:center;padding:10px 0;border-top:1px dashed var(--line)}
+.gf-row:first-of-type{border-top:0}
+.gf-l{font-weight:700;font-size:.92rem;color:var(--ink2)}
+@media (max-width:560px){.gf-row{grid-template-columns:1fr;gap:4px}}
+input.big,select.big{font-size:1.05rem;padding:9px 12px}
+input.big{width:100%}
+.gf-preview{margin-top:10px;background:var(--accentSoft);border-radius:10px;padding:12px 14px;font-size:1.08rem}
+.gf-preview .lbl{display:block;font-size:.8rem;color:var(--ink2)}
+.meter{display:inline-flex;gap:3px;vertical-align:middle}
+.meter i{width:16px;height:9px;border-radius:2px;background:var(--line)}
+.meter i.on{background:var(--accent)}
+
+/* 学習・丸つけ */
+.task{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line)}
+.task:last-of-type{border-bottom:0}
+.marks{display:inline-flex;gap:6px}
+.marks button{width:44px;height:44px;border-radius:10px;border:2px solid var(--line);background:var(--surface);font-family:var(--fd);font-weight:700;font-size:1.25rem;color:var(--ink3)}
+.marks button[data-v="○"][aria-pressed="true"]{border-color:var(--ok);background:var(--okSoft);color:var(--ok)}
+.marks button[data-v="△"][aria-pressed="true"]{border-color:var(--warn);background:var(--warnSoft);color:var(--warn)}
+.marks button[data-v="✖"][aria-pressed="true"]{border-color:var(--bad);background:var(--badSoft);color:var(--bad)}
+.sigbtns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:10px}
+.sigbtn{border:2px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 4px;font-family:var(--fd);font-weight:700;display:flex;flex-direction:column;align-items:center;gap:2px}
+.sigbtn .face{font-size:2.2rem;line-height:1.15}
+.sigbtn{padding:10px 4px 8px}
+.face{display:inline-block;font-size:1.05em;line-height:1;font-family:'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif}
+.sigbtn.green[aria-pressed="true"]{border-color:var(--ok);background:var(--okSoft);color:var(--ok)}
+.sigbtn.yellow[aria-pressed="true"]{border-color:var(--warn);background:var(--warnSoft);color:var(--warn)}
+.sigbtn.red[aria-pressed="true"]{border-color:var(--bad);background:var(--badSoft);color:var(--bad)}
+.special{border:2px solid var(--accent);border-radius:12px;padding:12px 14px;background:var(--accentSoft)}
+.special p{margin:6px 0}
+.tally{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.tally > div{border-radius:12px;padding:10px;text-align:center;font-family:var(--fd);font-weight:700}
+.tally b{display:block;font-size:1.6rem;line-height:1.2}
+.tally .o{background:var(--okSoft);color:var(--ok)} .tally .t{background:var(--warnSoft);color:var(--warn)} .tally .x{background:var(--badSoft);color:var(--bad)}
+
+/* 図鑑 */
+.tips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.tips{grid-template-columns:1fr}}
+.tip{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface);display:flex;flex-direction:column;gap:6px}
+.tip-h{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tip .lineM{display:grid;grid-template-columns:22px minmax(0,1fr);gap:4px}
+.pickb{background:var(--hl);color:var(--ink);font-size:.74rem;padding:0 8px;border-radius:5px;font-weight:700}
+.like{border:1.5px solid var(--line);background:var(--surface);border-radius:8px;padding:2px 10px;font-size:.84rem;align-self:flex-start}
+.like[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);background:var(--accentSoft);font-weight:700}
+.tf{display:grid;grid-template-columns:130px minmax(0,1fr);gap:10px 12px;align-items:center}
+.tf label{font-weight:700;font-size:.92rem;color:var(--ink2)}
+.tf input,.tf textarea,.tf select{width:100%}
+@media (max-width:560px){.tf{grid-template-columns:1fr;gap:4px}}
+
+/* 単元マップ */
+.sched{display:flex;gap:5px;overflow-x:auto;padding-bottom:6px}
+.les{flex:1 0 84px;border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;background:var(--surface);font-size:.8rem;line-height:1.4}
+.les b{display:block;font-family:var(--fd);font-size:.88rem}
+.les.now{border:2.5px solid var(--accent);background:var(--accentSoft)}
+.les.past{opacity:.55}
+.crit{border-left:6px solid var(--line)}
+.crit.k{border-left-color:var(--accent)} .crit.t{border-left-color:var(--warn)} .crit.s{border-left-color:var(--ok)}
+.ab{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px 12px;margin:4px 0 12px}
+.ab b{font-family:var(--fd);font-size:1.1rem;text-align:center;border-radius:8px;background:var(--surface2);align-self:start}
+.ab b.a{background:var(--hl)}
+
+/* 表 */
+.tbl-wrap{overflow-x:auto}
+table.list{width:100%;border-collapse:collapse;font-size:.9rem}
+.list th{text-align:left;font-size:.78rem;color:var(--ink2);border-bottom:2px solid var(--line);padding:6px 8px;white-space:nowrap}
+.list td{border-bottom:1px solid var(--line);padding:8px;vertical-align:middle}
+.list tr.sel td{background:var(--accentSoft)}
+.list tr[data-act]{cursor:pointer}
+.list tr[data-act]:hover td{background:var(--surface2)}
+table.hm{border-collapse:separate;border-spacing:2px;font-size:.86rem}
+.hm th{font-weight:700;color:var(--ink2);font-size:.76rem;text-align:center;padding:2px 4px;white-space:nowrap}
+.hm td{text-align:center;padding:0}
+.hm td.name{text-align:left;padding:2px 10px 2px 0;white-space:nowrap}
+.hm td.c{width:28px;height:28px;border-radius:6px;background:var(--surface2);font-family:var(--fd);font-weight:700}
+.hm td.c.o{background:var(--okSoft);color:var(--ok)} .hm td.c.t{background:var(--warnSoft);color:var(--warn)} .hm td.c.x{background:var(--badSoft);color:var(--bad)}
+.hm td.c.cur{outline:2px solid var(--accent);outline-offset:-2px}
+.hm td.c.pe{box-shadow:inset -3px 0 0 var(--pen)}
+.hm td.sp{width:6px}
+.hm tr[data-act]{cursor:pointer}
+.hm tr[data-act]:hover td.name{color:var(--accent);text-decoration:underline}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;color:var(--ink2);align-items:center;margin-top:10px}
+.legend .sw{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:4px}
+table.pt{border-collapse:collapse;font-size:.88rem;min-width:640px}
+.pt th,.pt td{border:1px solid var(--line);padding:5px 6px;text-align:center}
+.pt th{background:var(--surface2);font-weight:700;font-size:.78rem}
+.pt td.now,.pt th.now{background:var(--accentSoft)}
+.pt select{padding:1px 2px;font-size:.88rem}
+table.sg{border-collapse:collapse;font-size:.84rem}
+.sg th,.sg td{padding:4px 9px;text-align:center;border-bottom:1px solid var(--line)}
+.sg th:first-child,.sg td:first-child{text-align:left;white-space:nowrap}
+.sg .on{color:var(--accent)}
+svg text{fill:var(--ink2);font-family:var(--fb)}
+.chart-wrap{overflow-x:auto}
+
+/* 計画 */
+.advice{border-radius:12px;padding:14px 16px;background:var(--warnSoft);border:1.5px solid var(--warn);display:flex;flex-direction:column;gap:8px}
+.advice.ok{background:var(--okSoft);border-color:var(--ok)}
+.adv-h{font-family:var(--fd);font-size:1.15rem}
+.advice ul{margin:0;padding-left:1.2em}
+.gapchip{font-family:var(--fd);font-weight:700;border-radius:6px;padding:0 8px;white-space:nowrap}
+.gapchip.minus{background:var(--badSoft);color:var(--bad)} .gapchip.zero{background:var(--surface2);color:var(--ink2)} .gapchip.plus{background:var(--okSoft);color:var(--ok)}
+.gauge{display:flex;align-items:center;gap:8px;min-width:150px}
+.gbar{position:relative;flex:1;display:grid;grid-template-columns:repeat(8,1fr);gap:2px;height:12px}
+.gbar i{background:var(--surface2);border:1px solid var(--line);border-radius:3px}
+.gbar i.f{background:var(--accent);border-color:var(--accent)}
+.gbar i.h{background:linear-gradient(90deg,var(--accent) 50%,var(--surface2) 50%);border-color:var(--accent)}
+.gbar .pm{position:absolute;top:-4px;bottom:-4px;width:3px;background:var(--pen);border-radius:2px}
+.glbl{font-size:.82rem;white-space:nowrap}
+
+/* 変化 */
+.cmp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.cmp{grid-template-columns:1fr}}
+.cmp > div{border-radius:12px;padding:12px 14px;background:var(--surface2);display:flex;flex-direction:column;gap:6px}
+.cmp > div.now{background:var(--accentSoft)}
+.cmp .lbl{font-family:var(--fd);font-weight:700;font-size:.9rem;color:var(--ink2)}
+.tli{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px dashed var(--line)}
+.tli:last-child{border-bottom:0}
+.tli .when{font-family:var(--fd);font-weight:700;color:var(--accent)}
+
+/* みんな */
+.cols{display:grid;grid-template-columns:repeat(8,minmax(96px,1fr));gap:6px;overflow-x:auto;padding-bottom:4px}
+.col{background:var(--surface2);border-radius:10px;padding:8px 6px;min-height:140px;display:flex;flex-direction:column;gap:5px}
+.col.me{background:var(--accentSoft);outline:2px solid var(--accent)}
+.col h4{font-size:.84rem;text-align:center;color:var(--ink2);line-height:1.3;margin-bottom:4px}
+.kid{display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:2px 6px;font-size:.82rem}
+.kid.me{border:2px solid var(--accent);font-weight:700}
+.kid .t{margin-left:auto;font-size:.68rem;color:var(--ok);font-weight:700}
+.post{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.post:last-child{border-bottom:0}
+
+/* 教師 */
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px;text-align:left;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.tile span{font-size:.84rem;color:var(--ink2)}
+.tile b{font-family:var(--fd);font-size:1.9rem;line-height:1.2}
+.tile b small{font-size:.9rem}
+.tile em{font-style:normal;font-size:.78rem;color:var(--accent);font-weight:700}
+button.tile:hover{border-color:var(--accent)}
+.tile.alert b{color:var(--bad)}
+.feed{display:flex;flex-direction:column;gap:6px}
+.fi{background:var(--surface2);border-radius:8px;padding:8px 10px;font-size:.88rem}
+.fi .h{display:flex;gap:6px;align-items:center;font-weight:700;font-size:.84rem}
+.cols3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:960px){.cols3{grid-template-columns:1fr}}
+
+/* v3：押しやすさ（ゆびでも・マウスでも外しにくい大きさ） */
+.chip{min-height:40px;padding:5px 15px}
+.btn{min-height:42px}
+.btn.sm{min-height:36px;padding:4px 14px}
+.like{min-height:36px;padding:4px 12px}
+nav.tabs button{min-height:46px}
+.subtabs button{min-height:42px}
+
+/* だれが使う？ */
+.pick-wrap{max-width:900px;margin:0 auto;padding:28px 16px 60px}
+.pick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-top:18px}
+.pick-grid button{display:flex;flex-direction:column;align-items:center;gap:2px;border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:12px 6px;font-family:var(--fd);font-weight:700;font-size:1.1rem;box-shadow:var(--shadow)}
+.pick-grid button b{font-size:1.6rem;color:var(--accent);line-height:1.1}
+.pick-grid button:hover{border-color:var(--accent);background:var(--accentSoft)}
+.mebtn{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:var(--surface2);border-radius:999px;padding:4px 14px;font-weight:700;min-height:38px}
+.mebtn small{font-weight:400;color:var(--ink2)}
+
+/* つながり・おしらせ */
+.live{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;color:var(--ok);font-weight:700}
+.live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ok)}
+@media (prefers-reduced-motion:no-preference){.live.pulse::before{animation:pl .9s ease-out}@keyframes pl{0%{box-shadow:0 0 0 0 var(--ok)}100%{box-shadow:0 0 0 8px transparent}}}
+.bell{position:relative;border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 14px;font-weight:700;min-height:38px}
+.bell[aria-expanded="true"]{border-color:var(--accent);background:var(--accentSoft);color:var(--accent)}
+.badge{display:inline-grid;place-items:center;min-width:22px;height:22px;border-radius:999px;background:var(--pen);color:#fff;font-size:.78rem;padding:0 6px;margin-left:4px}
+.inbox{border:2px solid var(--accent)}
+.msg{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.msg:last-child{border-bottom:0}
+.msg.new{font-weight:700}
+.msg .when{font-size:.78rem;color:var(--ink3);white-space:nowrap}
+.callbar{border-radius:14px;padding:12px 16px;background:var(--warnSoft);border:2px solid var(--warn);display:flex;flex-direction:column;gap:8px}
+.callbar .ci{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.callbar .ci + .ci{border-top:1px dashed var(--warn);padding-top:8px}
+.callbar .ci p{flex:1 1 220px}
+.mycall{border-radius:12px;padding:10px 14px;background:var(--accentSoft);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.mycall p{flex:1 1 180px}
+.mycall.coming{background:var(--okSoft)}
+.helpbtns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.helpbtns .btn{width:100%}
+.replies{margin:6px 0 0 14px;padding-left:10px;border-left:3px solid var(--line);display:flex;flex-direction:column;gap:4px}
+.reply-in{display:flex;gap:6px;margin-top:6px}
+.reply-in input{flex:1;min-width:0}
+.stamps{display:flex;flex-wrap:wrap;gap:6px}
+.tcmt{background:var(--hl);color:var(--ink);border-radius:8px;padding:2px 10px;font-size:.88rem;display:inline-block;margin-top:4px}
+.feed .fi .when{margin-left:auto;font-weight:400;color:var(--ink3);font-size:.76rem}
+
+/* もしも */
+.ifq{padding:10px 0;border-top:1px dashed var(--line);display:flex;flex-direction:column;gap:6px}
+.ifq:first-of-type{border-top:0;padding-top:0}
+.ifq-q{font-weight:700}
+.chip.sm{min-height:34px;padding:3px 11px;font-size:.84rem}
+.ifm{display:inline-flex;align-items:center;margin-left:auto;padding-left:8px}
+/* 丸つけのポイント */
+ol.cpoints{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (max-width:640px){ol.cpoints{grid-template-columns:1fr}}
+.cpoints li{display:flex;gap:10px;align-items:center;background:var(--surface2);border-radius:10px;padding:10px 12px;font-weight:700}
+.cp-ic{font-size:1.4rem;width:1.6em;text-align:center;flex:none;color:var(--pen)}
+/* 振り返り ＋−→ */
+.rf label{display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:4px}
+.rm{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;font-family:var(--fd);font-size:1.1rem;flex:none}
+.rm.p{background:var(--okSoft);color:var(--ok)} .rm.m{background:var(--badSoft);color:var(--bad)} .rm.n{background:var(--accentSoft);color:var(--accent)}
+.rf textarea{min-height:64px}
+.rl{display:flex;gap:6px;align-items:flex-start;margin-top:3px}
+.rl .rm{width:22px;height:22px;font-size:.9rem;border-radius:6px}
+/* 写真 */
+.tip-imgbtn{border:0;padding:0;background:none;border-radius:8px;overflow:hidden;align-self:flex-start;cursor:zoom-in}
+.tip-imgbtn img{display:block;max-width:100%;max-height:220px;border-radius:8px;border:1px solid var(--line)}
+.tip-prev{max-height:120px;border-radius:8px;border:1px solid var(--line)}
+.zoom{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.8);display:grid;place-items:center;padding:16px;cursor:zoom-out}
+.zoom img{max-width:100%;max-height:calc(100vh - 80px);border-radius:8px}
+.zoom-x{position:absolute;top:14px;right:18px;color:#fff;font-weight:700}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 20px;border-radius:999px;font-size:.92rem;z-index:20;max-width:calc(100% - 32px);box-shadow:0 4px 16px rgba(0,0,0,.2)}
+@media (prefers-reduced-motion:no-preference){.toast.show{animation:up .25s ease-out}@keyframes up{from{transform:translate(-50%,10px);opacity:0}}}
+</style>
+
+<div id="app"></div>
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script>
+/* ===== 基本データ（試作v1と同じ） ===== */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const R=mulberry32(51011);
+const pick=a=>a[Math.floor(R()*a.length)];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const F=(a,b)=>`<span class="fr"><span>${a}</span><span>${b}</span></span>`;
+
+const STEPS=['等しい分数','約分','通分','分数の大小','異分母のたし算','異分母のひき算','帯分数のたし算・ひき算','3つの分数の計算'];
+const MARU='①②③④⑤⑥⑦⑧'.split('');
+const TASKS=['教科書','ドリル'];
+const LESSONS=[
+ {t:0,k:'計画',d:'ガイダンス・目標点'},{t:1,k:'自由進度',d:''},{t:2,k:'自由進度',d:''},{t:3,k:'自由進度',d:''},
+ {t:4,k:'ミニテスト',d:'分析→計画見直し'},{t:5,k:'自由進度',d:'寺田問題①'},{t:6,k:'自由進度',d:'今日'},
+ {t:7,k:'自由進度',d:'寺田問題②'},{t:8,k:'復習',d:'弱点の対策'},{t:9,k:'復習',d:'本番に近づける'},{t:10,k:'テスト',d:'大分析'}];
+const NOW=6;
+const BASE=[0,.22,.45,.7,.78,1];
+const SIG={green:'すいすい',yellow:'もやもや',red:'こまった'};
+const STRATS=[
+ {k:'友だちと',re:/さん|友だち|ペア/},
+ {k:'ホワイトボード',re:/ホワイトボード/},
+ {k:'プリント',re:/プリント/},
+ {k:'教科書を読む',re:/教科書|例を読/},
+ {k:'時間をはかる',re:/時間をはか|はかって|分で|分をめざ|タイマー/},
+ {k:'コツ図鑑',re:/図鑑/},
+ {k:'説明する・教える',re:/説明|教え/},
+ {k:'✖から直す',re:/✖|直し|やり直/}];
+const detect=t=>STRATS.filter(s=>s.re.test(t)).map(s=>s.k);
+function conc(t){let c=0;if(/[①-⑧0-9０-９]/.test(t))c++;if(detect(t).length)c++;if(/回|問|分|つ|点|枚/.test(t))c++;if(/たら|から|ので|ために|より|次は/.test(t))c++;return c}
+
+const TERADA={
+ 1:{after:5,title:'寺田問題①',body:`${F(1,2)}＋${F(1,3)} の答えが ${F(2,5)} にならないわけを、図を使って説明しよう。`},
+ 2:{after:7,title:'寺田問題②',body:`2${F(1,4)} − 1${F(2,3)} を2通りの方法で計算し、自分に合う方法とその理由を書こう。`}};
+
+const CH=[
+ {id:'c1',crit:'t',title:'きまりを見つけて説明する',body:`${F(1,2)}−${F(1,3)}、${F(1,3)}−${F(1,4)}、${F(1,4)}−${F(1,5)} …を計算して、きまりを見つけよう。なぜそうなるかを図か式で説明しよう。`},
+ {id:'c2',crit:'t',title:'答えから問題をつくる',body:`答えが ${F(5,6)} になる、分母がちがう分数のたし算を3つ作ろう。作り方のコツも書こう。`},
+ {id:'c3',crit:'k',title:'分子が1の分数で表す',body:`${F(3,4)} を、分子が1のちがう分数のたし算で表そう（例 ${F(1,2)}＋${F(1,4)}）。ほかに何通りあるかな。`},
+ {id:'c4',crit:'t',title:'2つの通分をくらべる',body:'分母をかけ合わせる通分と、最小公倍数を使う通分。それぞれのよさと、使い分け方を書こう。'},
+ {id:'c5',crit:'s',title:'先生役：1分ミニ授業',body:'⑤⑥でつまずきやすいところを1つえらび、ホワイトボード1枚・1分で説明しよう。聞いた人の感想ももらおう。'}];
+const CRIT_NAME={k:'知識・技能',t:'思考・判断・表現',s:'主体的に学習に取り組む態度'};
+const CRIT_SHORT={k:'知技',t:'思判表',s:'主体'};
+
+const CRITERIA=[
+ {id:'k',rule:'異分母の分数の加法・減法の意味を理解し、通分や約分を使って正しく計算できる。',
+  B:'通分してたし算・ひき算ができる。答えを約分できる。',
+  A:'どんな分数でも正しく計算できる。自分のまちがいやすい所を見つけて直せる。やり方を友だちに教えられる。',
+  where:'①〜⑧の教科書・ドリル、1問テスト、ミニテスト（知識）、単元テスト'},
+ {id:'t',rule:'分数の意味や既習の計算をもとに、異分母分数の加減の計算の仕方を考え、図や式を使って説明している。',
+  B:'通分すると計算できるわけを、図か式で説明できる。',
+  A:'図と式をつなげて、だれにでもわかるように説明できる。ほかのやり方とくらべて、よさを言える。',
+  where:'寺田問題①②、ミニテスト（思考）、単元テスト、発展チャレンジ'},
+ {id:'s',rule:'計算の仕方を進んで考え、自分の学び方を調整しながら学習に生かそうとしている。',
+  B:'めあてを立てて学習を進め、振り返りで次にどうするかを書いている。',
+  A:'丸つけやミニテストの結果から、学び方（人・もの・こと）を自分で変えている。教えたり聞いたりして学びを広げている。',
+  where:'毎時のめあて・振り返り、計画の見直し、大分析'}];
+
+const SORT_Q=[
+ {t:'⑥のドリルで✖が続いたので、プリントに変えて同じ形の問題を練習した。',a:'s'},
+ {t:'1/2＋1/3 を、6等分した図と式を線でつないで説明した。',a:'t'},
+ {t:'帯分数のひき算を、くり下げても仮分数にしても正しく計算できた。',a:'k'}];
+
+/* ===== 児童データ（架空。出席番号＋ニックネーム） ===== */
+const NAMES=['あおい','はると','ゆい','そうた','みなと','めい','いつき','さくら','れん','ひなた','こはる','りく','ゆうな','たいが','ほのか','しょう','あかり','かいと','つむぎ','だいち','ここな','ゆうと','りお','けんた','まゆ','ひろと'];
+const FOCAL=4;
+const VAGUE_ATT=['がんばる','しゅうちゅうする','しずかにやる','まじめにやる'];
+const SPEC_ATT=['わからなかったら3分考えてから聞く','ホワイトボードで友だちと問題を出し合う','時間をはかって10問とく','教科書の例を読んでから問題をとく','プリントで✖だったところを練習する','○がついたら友だちに説明してみる'];
+const VAGUE_R=['がんばった。','できた。','しゅうちゅうできた。','ふつうだった。'];
+function specR(st){const m=MARU[clamp(st,1,8)-1];return pick([
+ `${m}のドリルで✖が2つ。原因は約分のわすれ。次は答えを出したら約分できるか確かめる。`,
+ `${m}は教科書の例を読んでからやったら、ほとんど○だった。先に読むのが大事だと思った。`,
+ `わからない所を${pick(NAMES)}さんに聞いて解決した。次は自分が説明する側になりたい。`,
+ `時間をはかったら10問で8分。次は7分をめざす。`,
+ `ホワイトボードで問題を出し合ったら、通分のコツがわかった。`])}
+const NOTE={
+ red:c=>pick([`${MARU[c-1]}で通分する数がわからなくなった`,'ドリルで✖が続いて、どこがちがうのかわからない','最小公倍数の見つけ方がまだあやしい']),
+ yellow:c=>pick([`${MARU[c-1]}の答え、約分できるか確かめ中`,'寺田問題の説明で、図と式をどうつなぐか考え中','教科書の例はわかったけど、ドリルだと手が止まる']),
+ green:c=>pick([`${MARU[c-1]}の教科書が終わった。ドリルに入る`,'○が続いている。次は時間をはかってやってみる','通分のコツなら説明できそう'])};
+
+function makeStudent(i){
+  const ability=.45+R()*.55, pace=.7+R()*.6;
+  let done=clamp(Math.round(pace*4.6+(R()-.5)),2,8);
+  if([2,7,13].includes(i)){done=7;}
+  const ab=[2,7,13].includes(i)?.95:ability;
+  const planAt5=clamp(done+Math.round((R()-.35)*3),3,8);
+  const plan=[0,1,2,3,4,5].map(t=>Math.round(planAt5*BASE[t]));
+  plan.push(Math.min(8,Math.round(planAt5+(8-planAt5)/2)),8,8,8,8);
+  const actual=[0,1,2,3,4,5].map(t=>Math.round(done*BASE[t]));
+  const marks={};
+  for(let n=1;n<=done;n++)for(let k=0;k<2;k++){const r=R();marks[n+'-'+k]=r<ab?'○':r<ab+(1-ab)*.6?'△':'✖'}
+  if(done<8&&R()<.5)marks[(done+1)+'-0']=R()<ab?'○':'△';
+  const mini={k:clamp(Math.round(70*(.5+.45*ab)+(R()-.5)*8),30,70),t:clamp(Math.round(30*(.3+.62*ab)+(R()-.5)*8),6,30)};
+  const target=[80,85,90,95,100][Math.floor(R()*5)];
+  const behind=actual[5]-plan[5];
+  let signal=(behind<=-2||(R()<.3&&ab<.65))?'red':R()<.35?'yellow':'green';
+  const cs=Math.min(8,done+1);
+  const g=R();
+  const refl=[];
+  for(let t=0;t<=5;t++){
+    const p=g*t/5+.1;
+    let mPace,mAtt,text;
+    if(t===0){mPace=`目標点${target}点`;mAtt=g>.6?pick(SPEC_ATT):pick(VAGUE_ATT);text=g>.5?`計画は1時間に1つ以上すすめる。前の単元はドリルを後回しにしたので、今回は先にやる。`:'がんばりたい。'}
+    else if(t===4){mPace='ミニテストで弱点を見つける';mAtt=R()<p?'正直に丸つけをする':'がんばる';text=R()<p+.1?`ミニテストは知識${mini.k}/70、思考${mini.t}/30。${mini.t<20?'説明の問題が弱いので寺田問題で練習する。':'まちがえた約分をやり直す。'}`:'ミニテストがおわった。'}
+    else{mPace=R()<p?`${MARU[clamp(plan[t],1,8)-1]}まで終わらせる`:'すすめる';mAtt=R()<p?pick(SPEC_ATT):pick(VAGUE_ATT);text=R()<p+.05?specR(actual[t]||1):pick(VAGUE_R)}
+    refl.push({t,mPace,mAtt,text,strats:detect(mAtt+text)});
+  }
+  return {id:i,no:i+1,name:NAMES[i],ability:ab,marks,plan,actual,mini,target,signal,note:NOTE[signal](cs),
+    terada:done>=5?{1:R()<.7?'提出':'取り組み中'}:{},challenges:[],teacherRole:false,refl,selfCheck:{},
+    goal:null,todayMarks:[],reflDone:false,growthNote:'',planSaved:false,gWho:[],gTools:[],gOther:'',checkSeen:false,
+    flow:null};
+}
+let students=NAMES.map((_,i)=>makeStudent(i));
+/* 中心になる児童（みなと）の記録は手で書いた例 */
+(function(){const s=students[FOCAL];
+  s.ability=.75;s.marks={};
+  const mk={1:['○','○'],2:['△','✖'],3:['○','△'],4:['○','○'],5:['○','△']};
+  for(const n in mk)mk[n].forEach((m,k)=>s.marks[n+'-'+k]=m);
+  s.plan=[0,1,3,4,4,6,7,8,8,8,8];s.actual=[0,1,2,4,4,5];s.mini={k:62,t:18};s.target=90;
+  s.signal='yellow';s.note='ひき算で通分したあと、約分をわすれそう。確かめ方を考え中';s.terada={1:'提出'};
+  s.refl=[
+   {t:0,mPace:'目標点90点',mAtt:'がんばる',text:'がんばりたい。'},
+   {t:1,mPace:'①を終わらせる',mAtt:'しゅうちゅうする',text:'①が終わった。しゅうちゅうできた。'},
+   {t:2,mPace:'②と③を終わらせる',mAtt:'おしゃべりしない',text:'約分で✖が1つ、△が1つあった。最大公約数をさがすのがおそかった。'},
+   {t:3,mPace:'③を終わらせて④の教科書まで',mAtt:'わからなかったら3分考えてから聞く',text:'通分は最小公倍数を見つけるのがコツ。ゆいさんに聞いたら、大きい方の分母の倍数から調べるといいと教えてもらってできた。'},
+   {t:4,mPace:'ミニテストで弱点を見つける',mAtt:'正直に丸つけをする',text:'知識は62/70で、約分のミスが2つ。思考は18/30で、説明の問題で式だけ書いてしまった。これからは寺田問題で、図をかいて説明する練習をする。'},
+   {t:5,mPace:'⑤を終わらせ、寺田問題①を出す',mAtt:'ホワイトボードで説明を3回する',text:'⑤終了。寺田問題で1/2+1/3を図で説明した。ホワイトボードでそうたさんに説明したら「なんで6にするの」と聞かれて、最小公倍数の話を足したら伝わった。説明すると自分もわかる。'}
+  ].map(r=>({...r,strats:detect(r.mAtt+r.text)}));
+})();
+
+/* ===== みんなで共有するデータ（児童の記録・図鑑・ボード・よびだし・おしらせ） =====
+   試作では localStorage に保存し、同じPCで開いた別のタブ・ウィンドウにすぐ反映する。
+   本実装ではこの save / pull を Firestore などに差しかえる。 */
+let db={students,
+  /* 授業の記録（1問テスト・ミニ授業は先生がその場で出し、ここに履歴として残す） */
+  lessons:{
+   1:{quiz:'2/3 ＝ □/12 の□は？',ans:'8',ok:'22',mini:'等しい分数は、分母と分子に同じ数をかける（わる）',memo:''},
+   2:{quiz:'18/24 を約分しよう',ans:'3/4',ok:'17',mini:'約分は最大公約数でわると1回で終わる',memo:'2で何回もわる子が多い'},
+   3:{quiz:'2/3 と 3/4 を通分しよう',ans:'8/12 と 9/12',ok:'20',mini:'通分は、大きい方の分母の倍数から調べる',memo:''},
+   4:{quiz:'',ans:'',ok:'',mini:'ミニテストの分析のしかた：✖の原因を「計算」「考え方」「読みまちがい」に分ける',memo:'ミニテスト実施'},
+   5:{quiz:'3/5 と 2/3、大きいのは？',ans:'2/3',ok:'15',mini:'大小をくらべるときも、まず通分',memo:'寺田問題①を出した'},
+   6:{quiz:'2/3 ＋ 1/4 ＝ ？',ans:'11/12',ok:'',mini:'ひき算も、まず通分。答えが出たら「約分できる？」と必ず確かめよう。',memo:''}},
+  board:[
+   {id:'b1',who:'ゆい',step:3,kind:'気づき',text:'通分は、大きい方の分母の倍数を順に調べると早く見つかる',like:6,likedBy:[],replies:[]},
+   {id:'b2',who:'みなと',step:5,kind:'気づき',text:'1/2+1/3 を図にすると、6等分にしないと同じ大きさにならない',like:5,likedBy:[],replies:[]},
+   {id:'b3',who:'りく',step:5,kind:'質問',text:'答えが仮分数になったら、帯分数に直さないといけない？',like:2,likedBy:[],replies:[]},
+   {id:'b4',who:'さくら',step:2,kind:'気づき',text:'約分は最大公約数でわると1回で終わる。2で何回もわるとミスしやすい',like:4,likedBy:[],replies:[]},
+   {id:'b5',who:'たいが',step:6,kind:'気づき',text:'ひき算も通分までは同じ。最後に約分をわすれないよう指でチェックしてる',like:3,likedBy:[],replies:[]}],
+  tips:[
+   {id:1,who:'ゆい',step:3,src:'教科書',kind:'コツ',prob:'',mis:'',fix:'通分は、大きい方の分母の倍数を順に調べる。4と6なら 6、12…と見て、12が4でもわれるから12。',useful:9,pick:true,usefulBy:[]},
+   {id:2,who:'さくら',step:2,src:'ドリル',kind:'まちがい',prob:'18/24 を約分',mis:'2でわって 9/12 で止めてしまった',fix:'最大公約数の6でわると 3/4。わったあと「まだわれる？」と確かめる。',useful:7,pick:false,usefulBy:[]},
+   {id:3,who:'たいが',step:6,src:'ドリル',kind:'まちがい',prob:'5/6 − 1/4',mis:'分母どうしもひいて 4/2 にした',fix:'分母はひかない。12にそろえて 10/12 − 3/12 = 7/12。',useful:4,pick:false,usefulBy:[]},
+   {id:4,who:'れん',step:0,src:'ミニテスト',kind:'まちがい',prob:'3/5 と 2/3 の大小',mis:'分子が大きい 3/5 のほうが大きいと思った',fix:'通分してからくらべる。9/15 と 10/15 だから 2/3 のほうが大きい。',useful:5,pick:false,usefulBy:[]},
+   {id:5,who:'こはる',step:5,src:'教科書',kind:'コツ',prob:'',mis:'',fix:'答えが出たら、分母と分子が 2、3、5 でわれるか順にチェックすると約分わすれがなくなる。',useful:3,pick:false,usefulBy:[]},
+   {id:6,who:'ゆうと',step:7,src:'ドリル',kind:'まちがい',prob:'2 1/4 − 1 2/3',mis:'1/4 から 2/3 がひけなくて、ひく順番を逆にした',fix:'通分して 2 3/12 − 1 8/12。3/12 から 8/12 はひけないので、1くり下げて 1 15/12 にする。仮分数にしてもOK。',useful:6,pick:true,usefulBy:[]},
+   {id:7,who:'たいが',step:0,src:'ミニテスト',kind:'コツ',prob:'説明の問題',mis:'',fix:'「図」「式」「言葉」の3つがそろっているか見直したら点が上がった。',useful:8,pick:false,usefulBy:[]},
+   {id:8,who:'さくら',step:4,src:'教科書',kind:'コツ',prob:'',mis:'',fix:'分子が同じなら、分母が小さいほうが大きい。1/3 と 1/4 なら 1/3 が大きい。',useful:2,pick:false,usefulBy:[]}],
+  calls:[],msgs:[],log:[]};
+const ss={get:k=>{try{return sessionStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{sessionStorage.setItem(k,v)}catch(e){}}};
+const state={mode:ss.get('mode')||'student',me:ss.get('me')===null?null:+ss.get('me'),tab:'today',ttab:'class',tSel:FOCAL,planSel:null,
+  sub:{},open:{},form:{},sortAns:{},tipKind:'まちがい',tipFilter:'cur',inbox:false,zoom:null};
+
+/* ===== 計算ヘルパー ===== */
+const doneOf=s=>{let d=0;for(let n=1;n<=8;n++){if(s.marks[n+'-0']&&s.marks[n+'-1'])d=n;else break}return d};
+const curStep=s=>Math.min(8,doneOf(s)+1);
+function counts(s){const c={'○':0,'△':0,'✖':0};Object.values(s.marks).forEach(m=>c[m]++);return c}
+const okRate=s=>{const c=counts(s),n=c['○']+c['△']+c['✖'];return n?c['○']/n:0};
+const gapOf=s=>doneOf(s)-s.plan[5];
+const canTeach=s=>{const r=[];for(let n=1;n<=8;n++)if(s.marks[n+'-0']==='○'&&s.marks[n+'-1']==='○')r.push(n);return r};
+const isACand=s=>doneOf(s)>=6&&okRate(s)>=.7&&s.mini.t>=21;
+const triedSteps=s=>{const r=[];for(let n=1;n<=8;n++)if(s.marks[n+'-0']||s.marks[n+'-1'])r.push(n);return r};
+const WHO=['ひとりで','友だちと','先生と'];
+const TOOLS=['教科書','ドリル','ノート','プリント','ホワイトボード','タイマー','コツ図鑑','ヒントカード','図・数直線','分数カード','動画','その他'];
+const fv=(id,d='')=>state.form[id]??d;
+function composeAtt(s,how,other=s.gOther){const p=[];if(s.gWho.length)p.push(s.gWho.join('・'));const tl=s.gTools.map(x=>x==='その他'?other:x).filter(Boolean);if(tl.length)p.push(tl.join('と')+'を使って');let t=p.join('、');if(how)t+=(t?'、':'')+how;return t}
+
+/* ===== 保存と同期 =====
+   操作の直前に pull で最新を読み、変わったときだけ save する（別の画面の書きこみを消さないため）。
+   ほかの画面が保存すると storage イベントが届くので、そこで描き直す。 */
+const STORE='susumi-note-v3.2';
+let lastSaved='';
+function pull(){try{const t=localStorage.getItem(STORE);if(t&&t!==lastSaved){db=JSON.parse(t);students=db.students;lastSaved=t;return true}}catch(e){}return false}
+function save(){const t=JSON.stringify(db);if(t===lastSaved)return false;try{localStorage.setItem(STORE,t);lastSaved=t}catch(e){toast('保存できませんでした。写真が多すぎるかもしれません');return false}return true}
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const meKey=()=>state.mode==='teacher'?'T':state.me;
+const whoName=k=>k==='T'?'先生':students[k]?.name+'さん';
+const idOf=name=>NAMES.indexOf(name);
+function send(to,text,from=meKey()){if(to===from||to==null||to<0)return;db.msgs.push({id:uid(),to,from,text,at:Date.now(),read:false});if(db.msgs.length>400)db.msgs.splice(0,db.msgs.length-400)}
+function logEv(text){db.log.unshift({at:Date.now(),text});if(db.log.length>60)db.log.length=60}
+const myMsgs=()=>db.msgs.filter(m=>m.to===meKey()).sort((a,b)=>b.at-a.at);
+const unread=()=>myMsgs().filter(m=>!m.read).length;
+const openCall=(from,to)=>db.calls.find(c=>c.from===from&&(to===undefined||c.to===to)&&(c.status==='open'||c.status==='coming'));
+function ago(t){const s=Math.max(0,Math.round((Date.now()-t)/1000));return s<60?'いま':s<3600?Math.floor(s/60)+'分前':Math.floor(s/3600)+'時間前'}
+
+/* ===== 表示の部品 ===== */
+const meter=(v,max=4)=>`<span class="meter" aria-label="具体さ ${v}/${max}">${Array.from({length:max},(_,i)=>`<i class="${i<v?'on':''}"></i>`).join('')}</span>`;
+const FACE={green:'😊',yellow:'🤔',red:'😣'};
+const face=sg=>`<span class="face" aria-hidden="true">${FACE[sg]}</span>`;
+const sigChip=sg=>`<span class="sig ${sg}">${face(sg)}${SIG[sg]}</span>`;
+const gapChip=g=>`<span class="gapchip ${g<0?'minus':g>0?'plus':'zero'} num">${g>0?'+':''}${g}</span>`;
+const stepLbl=n=>`${MARU[n-1]} ${STEPS[n-1]}`;
+const tipStep=n=>n?stepLbl(n):'ミニテスト';
+const tipN=t=>t.useful+t.usefulBy.length;
+const nm=x=>`<span class="no">${x.no}</span>${esc(x.name)}`;
+const sub=(key,d)=>state.sub[key]??d;
+function subtabs(key,items){const cur=sub(key,items[0][0]);return `<div class="subtabs" role="tablist">${items.map(([id,l])=>`<button role="tab" data-act="sub" data-k="${key}" data-v="${id}" aria-selected="${cur===id}">${l}</button>`).join('')}</div>`}
+function det(key,summary,body,openDef=false){const o=state.open[key]??openDef;return `<details class="more" data-open="${key}" ${o?'open':''}><summary>${summary}</summary><div class="in">${body}</div></details>`}
+const head=(ic,title,desc)=>`<div class="pagehead"><span class="pic" aria-hidden="true">${ic}</span><div><h2>${title}</h2>${desc?`<p>${desc}</p>`:''}</div></div>`;
+function gauge(s){
+  const d=doneOf(s),half=d<8&&(s.marks[(d+1)+'-0']||s.marks[(d+1)+'-1']),p=s.plan[5];
+  return `<div class="gauge" role="img" aria-label="進度 ${d}/8"><div class="gbar">${Array.from({length:8},(_,i)=>`<i class="${i<d?'f':(i===d&&half?'h':'')}"></i>`).join('')}${p?`<span class="pm" style="left:calc(${p/8*100}% - 1.5px)"></span>`:''}</div><span class="glbl num"><b>${d}</b>/8</span></div>`;
+}
+function tipCard(t,teacher){
+  return `<div class="tip"><div class="tip-h"><span class="tag ${t.kind==='まちがい'?'mis':'s'}">${t.kind}</span><span class="small muted">${tipStep(t.step)}・${t.src}・${esc(t.who)}さん</span>${t.pick?'<span class="pickb">先生おすすめ</span>':''}</div>
+   ${t.img?`<button class="tip-imgbtn" data-act="zoom" data-id="${t.id}" aria-label="写真を大きく見る"><img src="${t.img}" alt="ノートの写真" loading="lazy"></button>`:''}
+   ${t.prob?`<div class="small"><b>問題</b> ${esc(t.prob)}</div>`:''}
+   ${t.mis?`<div class="lineM"><span class="bad-t">✖</span><span>${esc(t.mis)}</span></div>`:''}
+   ${t.fix?`<div class="lineM"><span class="ok-t">→</span><span>${esc(t.fix)}</span></div>`:''}
+   ${teacher?`<div class="row"><span class="small muted">役に立った ${t.useful+t.usefulBy.length}</span><button class="chip" data-act="pick" data-id="${t.id}" aria-pressed="${t.pick}">先生おすすめ</button></div>`:`<button class="like" data-act="useful" data-id="${t.id}" aria-pressed="${t.usefulBy.includes(state.me)}">👍 役に立った ${t.useful+t.usefulBy.length}</button>`}</div>`;
+}
+
+/* ===== 共通：ヘッダーとメニュー ===== */
+function vHeader(){
+  return `<header class="top"><div class="top-in">
+   <div class="brand"><h1>すすみノート</h1><span class="unit">5年 分数のたし算とひき算</span><span class="lesson-pill">第${NOW}時</span></div>
+   <div class="top-right">
+    <span class="live" id="live" title="同じPCで開いているほかの画面と、すぐにつながります">つながっています</span>
+    ${state.mode==='student'&&state.me!=null?`<button class="mebtn" data-act="whoami"><span class="no">${state.me+1}</span>${esc(students[state.me].name)}さん <small>かわる</small></button>`:''}
+    ${state.mode==='teacher'||state.me!=null?`<button class="bell" data-act="inbox" aria-expanded="${state.inbox}">🔔 おしらせ${unread()?`<span class="badge num">${unread()}</span>`:''}</button>`:''}
+    <div class="seg" role="group" aria-label="画面の切りかえ">
+     <button data-act="mode" data-v="student" aria-pressed="${state.mode==='student'}">児童</button>
+     <button data-act="mode" data-v="teacher" aria-pressed="${state.mode==='teacher'}">教師</button>
+    </div>
+    ${state.mode==='teacher'?'<button class="btn sm ghost" data-act="reset">試作データをもどす</button>':''}
+    <span class="proto">試作版・データは架空</span>
+   </div></div></header>`;
+}
+/* だれが使う？（タブごとに覚えるので、タブを分ければ何人分でも同時に試せる） */
+function vPick(){
+  return `<div class="pick-wrap">${head('👋','だれが使う？','自分の番号をおしてね')}
+   <div class="pick-grid">${students.map(x=>`<button data-act="iam" data-i="${x.id}"><b class="num">${x.no}</b>${esc(x.name)}</button>`).join('')}</div></div>`;
+}
+/* おしらせ */
+function vInbox(){
+  const l=myMsgs().slice(0,30);
+  return `<section class="card inbox" aria-label="おしらせ"><h3>🔔 おしらせ <button class="btn sm ghost" style="margin-left:auto" data-act="inbox">とじる</button></h3>
+   ${l.length?l.map(m=>`<div class="msg ${m.read?'':'new'}"><span>${esc(m.text)}</span><span class="when">${esc(whoName(m.from))}・${ago(m.at)}</span></div>`).join(''):'<p class="empty">まだおしらせはありません。</p>'}</section>`;
+}
+/* よびだし（自分あてのもの）。児童は友だちから、先生は児童から */
+function vCalls(){
+  const k=meKey(),l=db.calls.filter(c=>c.to===k&&(c.status==='open'||c.status==='coming'));
+  if(!l.length)return '';
+  const t=k==='T';
+  return `<section class="callbar" aria-label="よびだし" aria-live="polite">${l.map(c=>{const f=students[c.from];return `<div class="ci">
+   <p>📣 <b>${esc(f.name)}さん</b>（${MARU[c.step-1]} ${STEPS[c.step-1]}）${t?'が先生をよんでいます':'が、あなたに教えてほしいって'}${c.note?`<br><span class="small">「${esc(c.note)}」</span>`:''}<span class="small muted">　${ago(c.at)}</span></p>
+   ${c.status==='coming'?`<span class="ok-t small">${t?'行くと伝えました':'行くと伝えたよ'}</span><button class="btn sm" data-act="callDone" data-id="${c.id}">${t?'対応した':'教えおわった'}</button>`
+    :`<button class="btn sm" data-act="callGo" data-id="${c.id}">${t?'行きます':'行くよ！'}</button>${t?`<button class="btn sm ghost" data-act="callDone" data-id="${c.id}">対応した</button>`:`<button class="btn sm ghost" data-act="callNo" data-id="${c.id}">いまはむり</button>`}`}</div>`}).join('')}</section>`;
+}
+/* 自分が出したよびだしの様子 */
+function vMyCall(s){
+  const c=openCall(s.id);
+  if(!c)return '';
+  const to=c.to==='T'?'先生':students[c.to].name+'さん';
+  return `<div class="mycall ${c.status}" aria-live="polite"><p>${c.status==='coming'?`🏃 <b>${esc(to)}</b>が来てくれるよ！`:`🙋 <b>${esc(to)}</b>をよんでいます…　<span class="small muted">待つあいだは、教科書の例を読みなおそう</span>`}</p>
+   <button class="btn sm" data-act="callDone" data-id="${c.id}">解決した</button>${c.status==='open'?`<button class="btn sm ghost" data-act="callCancel" data-id="${c.id}">とりけす</button>`:''}</div>`;
+}
+const S_TABS=[['today','✏️','きょうの学習'],['tips','💡','コツ・まちがい図鑑'],['map','🗺️','単元マップ'],['plan','📅','わたしの計画'],['growth','🌱','わたしの変化'],['class','👥','みんなの学び']];
+const T_TABS=[['class','📊','クラスの進度'],['lesson','📝','授業の記録'],['voice','💬','考えと声'],['plan','📅','計画のずれ'],['adv','⭐','A評価・発展'],['growth','🌱','振り返りの変化']];
+function vNav(){
+  const st=state.mode==='student',tabs=st?S_TABS:T_TABS,cur=st?state.tab:state.ttab;
+  return `<nav class="tabs" aria-label="メニュー">${tabs.map(([id,ic,l])=>`<button data-act="${st?'tab':'ttab'}" data-v="${id}" ${cur===id?'aria-current="page"':''}><span class="ic" aria-hidden="true">${ic}</span>${l}</button>`).join('')}</nav>`;
+}
+
+/* ===== 児童：いまここ ===== */
+function vNow(s){
+  const d=doneOf(s),cs=curStep(s),p=s.plan[5],g=gapOf(s),all=d===8,goal=s.goal;
+  const st=g<0?`<button class="stat bad" data-act="tab" data-v="plan">計画まであと${-g}ステップ →</button>`:g>0?`<button class="stat ok" data-act="tab" data-v="plan">計画より${g}ステップ先 →</button>`:`<button class="stat ok" data-act="tab" data-v="plan">計画どおり →</button>`;
+  return `<section class="nowcard" aria-label="いまの場所">
+   <div>
+    <span class="now-lbl">いまここ</span>
+    <div class="now-step">${all?'<span class="now-name">必須課題 ぜんぶ終わり！</span>':`<span class="now-num">${MARU[cs-1]}</span><span class="now-name">${STEPS[cs-1]}</span>`}</div>
+    <div class="now-sub">${st}${goal?`<span class="pill">めあて ${MARU[goal.step-1]}まで</span>`:''}<span class="pill">目標点 ${s.target}点</span></div>
+   </div>
+   <ol class="track" aria-label="進度 ${d}/8">${STEPS.map((n,i)=>{const k=i+1,cls=k<=d?'done':(k===cs&&!all?'cur':'');return `<li class="${cls}" title="${MARU[i]} ${n}"><span class="nd">${k<=d?'✓':k}</span><span class="sn">${n}</span>${k===p?'<span class="flag">計画</span>':''}</li>`}).join('')}</ol>
+  </section>`;
+}
+
+/* ===== 児童：きょうの学習（4つの場面を切りかえる）
+   1問テストとミニ授業は先生が毎時間その場で出すので、児童の画面には入れない（記録は教師の「授業の記録」へ） ===== */
+const FLOW=[['goal','めあて'],['work','学習'],['check','丸つけ'],['refl','振り返り']];
+function flowDone(s,id){return {goal:!!s.goal,work:s.todayMarks.length>0,check:!!s.checkSeen,refl:s.reflDone}[id]}
+const curFlow=s=>s.flow||(FLOW.find(([id])=>!flowDone(s,id))||FLOW[FLOW.length-1])[0];
+function vToday(s){
+  const f=curFlow(s);
+  return vNow(s)+`<nav class="flowbar" aria-label="きょうの流れ">${FLOW.map(([id,l],i)=>{const dn=flowDone(s,id);return `<button data-act="flow" data-v="${id}" class="${dn?'done':''}" ${id===f?'aria-current="step"':''}><span class="fn">${dn?'✓':i+1}</span><span class="fl">${l}</span></button>`}).join('')}</nav>`
+   +({goal:pGoal,work:pWork,check:pCheck,refl:pRefl}[f])(s);
+}
+function panel(id,tag,body){
+  const i=FLOW.findIndex(f=>f[0]===id),last=FLOW.length-1;
+  return `<section class="card panel"><div class="panel-h"><span class="pnum">${i+1}</span><h3>${FLOW[i][1]}</h3>${tag?`<span class="tag">${tag}</span>`:''}</div>${body}
+   <div class="panel-nav">${i>0?`<button class="btn ghost" data-act="flow" data-v="${FLOW[i-1][0]}">◀ ${FLOW[i-1][1]}</button>`:'<span></span>'}${i<last?`<button class="btn" data-act="flow" data-v="${FLOW[i+1][0]}">つぎへ：${FLOW[i+1][1]} ▶</button>`:''}</div></section>`;
+}
+/* めあて：だれと・何を使っては複数えらべる。「もしも」のときの手立ても先に決めておく */
+const IFS=[
+ {k:'ifFocus',ic:'😵',q:'もし、集中が切れてしまったら？',ph:'例：タイマーで5分ずつ区切って、1問ずつ進める',ch:['タイマーで区切る','少し体を動かす','場所をかえる','友だちと問題を出し合う']},
+ {k:'ifLost',ic:'🤔',q:'もし、わからなくなってしまったら？',ph:'例：3分考えて、教科書の例を見てから友だちに聞く',ch:['3分考える','教科書の例を見る','コツ図鑑を見る','友だちに聞く','先生に聞く']},
+ {k:'ifLate',ic:'🐢',q:'もし、進度が遅れていたら？',ph:'例：ドリルは家で2問やって、次の時間に追いつく',ch:['計画を見直す','休み時間に少しやる','家でドリルをやる','教えてもらって進める']}];
+function pGoal(s){
+  const d=doneOf(s),cs=curStep(s),g=s.goal,last=s.refl.filter(r=>r.t<NOW).slice(-1)[0];
+  const gStep=+fv('gStep',g?g.step:Math.min(8,cs+1)),how=fv('gHow',g?g.how:''),other=fv('gOther',s.gOther||''),att=composeAtt(s,how,other);
+  const hasOther=s.gTools.includes('その他');
+  return panel('goal','',`
+   ${last?`<div class="quote" style="margin-bottom:14px"><b>前の時間のわたし：</b>${reflHTML(last)}</div>`:''}
+   <div class="stack">
+    <div class="box"><h4><span class="tag k">進度</span>きょうは、どこまで進む？</h4>
+     <div class="row"><select id="gStep" class="big" aria-label="どこまで">${STEPS.map((_,i)=>`<option value="${i+1}" ${gStep===i+1?'selected':''}>${stepLbl(i+1)}</option>`).join('')}</select><span>まで</span><span class="hint">（あと${Math.max(0,gStep-d)}ステップ）</span></div>
+    </div>
+    <div class="box"><h4><span class="tag s">学び方</span>どうやって進める？ <span class="hint" style="font-weight:400">いくつえらんでもOK</span></h4>
+     <div class="gf-row"><span class="gf-l">だれと</span><div class="row">${WHO.map(w=>`<button class="chip" data-act="gWho" data-v="${w}" aria-pressed="${s.gWho.includes(w)}">${w}</button>`).join('')}</div></div>
+     <div class="gf-row"><span class="gf-l">何を使って</span><div class="row">${TOOLS.map(w=>`<button class="chip" data-act="gTool" data-v="${w}" aria-pressed="${s.gTools.includes(w)}">${w}</button>`).join('')}
+      ${hasOther?`<input type="text" id="gOther" data-enter="saveGoal" style="flex:1;min-width:160px" placeholder="その他：何を使う？" value="${esc(other)}">`:''}</div></div>
+     <div class="gf-row"><label class="gf-l" for="gHow">どうする</label><input type="text" id="gHow" data-enter="saveGoal" class="big" placeholder="例：✖の問題と同じ形を3問出し合う" value="${esc(how)}"></div>
+     <div class="gf-preview"><span class="lbl">わたしの学び方のめあて</span><b id="gPrev">${esc(att)||'<span class="muted" style="font-weight:400">上でえらぶと、ここに文ができます</span>'}</b>
+      <div class="small muted" style="margin-top:6px">具体さ <span id="mAtt">${meter(conc(att))}</span>　人・もの・数が入ると上がるよ</div></div>
+    </div>
+    <div class="box"><h4><span class="tag t">もしも</span>こまったときは、どうする？ <span class="hint" style="font-weight:400">ボタンをおすと文に入るよ</span></h4>
+     ${IFS.map(x=>{const v=fv(x.k,g?.ifs?.[x.k]||'');return `<div class="ifq"><label class="ifq-q" for="${x.k}"><span aria-hidden="true">${x.ic}</span> ${x.q}</label>
+      <div class="row">${x.ch.map(c=>`<button class="chip sm" data-act="ifChip" data-k="${x.k}" data-v="${c}">＋${c}</button>`).join('')}</div>
+      <div class="reply-in"><input type="text" id="${x.k}" placeholder="${x.ph}" value="${esc(v)}"><span class="ifm">${meter(conc(v))}</span></div></div>`}).join('')}
+    </div>
+   </div>
+   <div class="row" style="margin-top:14px"><button class="btn big" data-act="saveGoal">めあてを決める</button>${g?`<span class="ok-t small">✓ 決定ずみ</span>`:''}</div>`);
+}
+function taskRows(n){
+  return `<div><b>${stepLbl(n)}</b>${TASKS.map((tk,k)=>{const key=n+'-'+k,m=state.cur.marks[key];return `<div class="task"><span>${tk}${k===0?'の練習問題':'の計算'}</span>
+    <div class="marks" role="group" aria-label="${tk}の丸つけ">${['○','△','✖'].map(x=>`<button data-act="mark" data-k="${key}" data-v="${x}" aria-pressed="${m===x}" aria-label="${x}">${x}</button>`).join('')}</div></div>`}).join('')}</div>`;
+}
+function pWork(s){
+  const d=doneOf(s),cs=curStep(s),all=d===8;
+  const tipsHere=db.tips.filter(t=>t.step===cs).sort((x,y)=>y.pick-x.pick||tipN(y)-tipN(x));
+  const g=s.goal,ifs=g?.ifs?IFS.filter(x=>g.ifs[x.k]):[];
+  const specials=[
+   ...Object.entries(TERADA).filter(([,t])=>d>=t.after-1).map(([id,t])=>`<div class="special"><b>${t.title}</b> <span class="tag t">思考・判断・表現</span><p>${t.body}</p>
+     <div class="row"><span class="small">いま：<b>${s.terada[id]||'まだ'}</b></span>${s.terada[id]!=='提出'?`<button class="btn sm ghost" data-act="terada" data-v="${id}">${s.terada[id]?'提出する':'取り組む'}</button>`:''}</div></div>`),
+   ...s.challenges.map(id=>{const c=CH.find(x=>x.id===id);return `<div class="special"><b>先生からのチャレンジ：${c.title}</b> <span class="tag ${c.crit}">${CRIT_NAME[c.crit]}</span><p>${c.body}</p></div>`}),
+   ...(s.teacherRole?['<div class="special"><b>🎓 きょうは先生役</b><p class="small">「こまった」を出している友だちに、終わったステップのやり方を教えよう。</p></div>']:[])];
+  return panel('work','教科書・ドリルは必ずやる',`<div class="grid2">
+   <div class="stack">
+    <div class="box"><h4>やること</h4>
+     ${all?'<p>①〜⑧の必須課題はぜんぶ終わり！ 右の寺田問題やチャレンジに取り組もう。</p>':taskRows(cs)+'<p class="hint" style="margin-top:6px">終わったら丸つけ。2つとも丸がつくと、つぎのステップへ進むよ。</p>'}
+    </div>
+    ${ifs.length?det('ifsHere','📌 わたしの「もしも」の手立て',ifs.map(x=>`<div class="small"><span aria-hidden="true">${x.ic}</span> <b>${x.q.replace('もし、','')}</b><br>→ ${esc(g.ifs[x.k])}</div>`).join(''),true):''}
+    ${det('tipsHere',`💡 ${MARU[cs-1]}のコツ・まちがい（${tipsHere.length}件）`,(tipsHere.slice(0,3).map(t=>tipCard(t)).join('')||'<p class="empty">まだ投稿がありません。</p>')+`<button class="btn sm ghost" style="align-self:flex-start" data-act="tab" data-v="tips">図鑑をぜんぶ見る →</button>`)}
+    ${d>0?det('fixMarks','終わったステップの丸つけを直す',Array.from({length:d},(_,i)=>taskRows(i+1)).join('')):''}
+   </div>
+   <div class="stack">
+    <div class="box"><h4>いまの自分 <span class="hint" style="font-weight:400">みんなと先生に見えるよ</span></h4>
+     <div class="sigbtns">${Object.keys(SIG).map(k=>`<button class="sigbtn ${k}" data-act="sig" data-v="${k}" aria-pressed="${s.signal===k}">${face(k)}${SIG[k]}</button>`).join('')}</div>
+     <label for="noteIn" class="hint">考えていること・こまっていること</label>
+     <div class="row"><input type="text" id="noteIn" data-enter="note" style="flex:1;min-width:0" value="${esc(fv('noteIn',s.note))}"><button class="btn sm" data-act="note">共有</button></div>
+     ${vMyCall(s)||`<div class="helpbtns"><button class="btn ghost" data-act="callT">🙋 先生にきく</button><button class="btn ghost" data-act="sub" data-k="class" data-v="help" data-go="class">🤝 友だちにきく</button></div>`}
+    </div>
+    ${specials.join('')}
+   </div></div>`);
+}
+/* 丸つけ：数を入力させるのではなく、丸つけのしかたを確かめる */
+const CHECK_POINTS=[
+ ['🖍️','赤ペンで丸をつける。自分の答えは消さない'],
+ ['✖','まちがいは消さずに✖。となりに正しい答えを書いて直す'],
+ ['🔍','答えだけでなく、とちゅうの式（通分・約分）も見る'],
+ ['✂️','答えが約分できないか、さいごに確かめる'],
+ ['△','考え方は合っているのに、どこかでミスしたら△'],
+ ['📝','✖・△の原因がわかったら、振り返りの「−」に書く']];
+function pCheck(s){
+  const cs=curStep(s);
+  return panel('check','',`<p class="lead">丸つけのポイント</p>
+   <ol class="cpoints">${CHECK_POINTS.map(([ic,t])=>`<li><span class="cp-ic" aria-hidden="true">${ic}</span><span>${t}</span></li>`).join('')}</ol>
+   <div class="box" style="margin-top:14px"><h4>丸つけがおわったら</h4>
+    <p class="small">②学習の「教科書・ドリル」に ○△✖ をつけよう（いちばん多かったものでOK）。数を数えなくて大丈夫。</p>
+    <div class="row" style="margin-top:10px"><button class="btn sm ghost" data-act="flow" data-v="work">②学習で ○△✖ をつける</button><button class="btn sm ghost" data-act="tipFrom">直したまちがいを図鑑にのせる →</button></div></div>`);
+}
+/* 振り返り：＋（できたこと）−（できなかったこと・丸つけからわかったこと）→（次の時間にどうするか） */
+const RF=[
+ {k:'rPlus',m:'＋',cls:'p',l:'できたこと・わかったこと',ph:'例：⑥の教科書は全部○。通分は大きい方の分母の倍数から調べると早かった'},
+ {k:'rMinus',m:'−',cls:'m',l:'できなかったこと（丸つけからわかったことも）',ph:'例：ドリルで✖が2つ。原因は約分のわすれ'},
+ {k:'rNext',m:'→',cls:'n',l:'次の時間にどうするか',ph:'例：答えが出たら2・3・5でわれるか確かめる。⑦まで進む'}];
+function reflHTML(r){
+  if(r.plus==null&&r.minus==null&&r.next==null)return esc(r.text);
+  return RF.map(x=>{const v=r[{rPlus:'plus',rMinus:'minus',rNext:'next'}[x.k]];return v?`<span class="rl"><b class="rm ${x.cls}">${x.m}</b>${esc(v)}</span>`:''}).join('');
+}
+function pRefl(s){
+  const g=s.goal,mine=s.reflDone?s.refl.find(r=>r.t===NOW):null;
+  const vals=RF.map(x=>fv(x.k,mine?.[{rPlus:'plus',rMinus:'minus',rNext:'next'}[x.k]]||''));
+  const all=vals.join(' ');
+  return panel('refl','',`
+   ${g?`<div class="quote" style="margin-bottom:12px"><b>きょうのめあて：</b>${MARU[g.step-1]}まで ／ ${esc(g.att||'—')}　<span class="muted">→ いま ${MARU[curStep(s)-1]}</span></div>`:'<p class="hint" style="margin-bottom:10px">先に①でめあてを決めておこう。</p>'}
+   <div class="stack">${RF.map((x,i)=>`<div class="rf ${x.cls}"><label for="${x.k}"><b class="rm ${x.cls}">${x.m}</b>${x.l}<span class="ifm">${meter(conc(vals[i]))}</span></label>
+    <textarea id="${x.k}" rows="2" placeholder="${x.ph}">${esc(vals[i])}</textarea></div>`).join('')}</div>
+   <div class="small muted" style="margin-top:8px">見つかった学び方：<span id="rStrat">${detect(all).join('・')||'—'}</span>　ぜんたいの具体さ <span id="rMeter">${meter(conc(all))}</span></div>
+   <div class="row" style="margin-top:12px"><button class="btn big" data-act="saveRefl">振り返りを出す</button>${s.reflDone?'<span class="ok-t small">✓ 提出ずみ</span><button class="btn sm ghost" data-act="tab" data-v="growth">わたしの変化を見る →</button>':''}</div>`);
+}
+
+/* ===== 児童：コツ・まちがい図鑑 ===== */
+function vTips(s){
+  const v=sub('tips','list'),cs=curStep(s);
+  let body;
+  if(v==='list'){
+    const f=state.tipFilter, fs=f==='cur'?cs:f==='all'?null:+f;
+    const list=db.tips.filter(t=>fs===null||t.step===fs).sort((x,y)=>y.pick-x.pick||tipN(y)-tipN(x));
+    body=`<div class="card"><div class="row" style="margin-bottom:14px">
+      <button class="chip" data-act="tipFilter" data-v="cur" aria-pressed="${f==='cur'}">いまのステップ ${MARU[cs-1]}</button>
+      <button class="chip" data-act="tipFilter" data-v="all" aria-pressed="${f==='all'}">すべて</button>
+      <select data-chg="tipFilter" aria-label="ステップをえらぶ"><option value="">ステップをえらぶ…</option>${MARU.map((m,i)=>`<option value="${i+1}" ${f===String(i+1)?'selected':''}>${stepLbl(i+1)}</option>`).join('')}<option value="0" ${f==='0'?'selected':''}>ミニテスト</option></select>
+      <span class="hint">${list.length}件</span></div>
+     <div class="tips">${list.map(t=>tipCard(t)).join('')||'<p class="empty">ここの投稿はまだありません。</p>'}</div></div>`;
+  }else{
+    const tried=triedSteps(s),kind=state.tipKind,tStep=fv('tStep',String(tried.slice(-1)[0]||0));
+    body=`<div class="card"><div class="row" style="margin-bottom:14px">${['まちがい','コツ'].map(k=>`<button class="chip" data-act="tipKind" data-v="${k}" aria-pressed="${kind===k}">${k==='まちがい'?'✖ まちがえたところ':'💡 見つけたコツ'}</button>`).join('')}</div>
+     <div class="tf">
+      <label for="tStep">ステップ</label><select id="tStep"><option value="0" ${tStep==='0'?'selected':''}>ミニテスト</option>${tried.map(n=>`<option value="${n}" ${tStep===String(n)?'selected':''}>${stepLbl(n)}</option>`).join('')}</select>
+      <label for="tSrc">どこで？</label><select id="tSrc">${['教科書','ドリル','ミニテスト','寺田問題'].map(x=>`<option ${fv('tSrc')===x?'selected':''}>${x}</option>`).join('')}</select>
+      <label for="tProb">どの問題？</label><input type="text" id="tProb" placeholder="例：5/6 − 1/4（なくてもOK）" value="${esc(fv('tProb'))}">
+      ${kind==='まちがい'?`<label for="tMis">どうまちがえた？</label><input type="text" id="tMis" placeholder="例：分母どうしもひいてしまった" value="${esc(fv('tMis'))}">`:''}
+      <label for="tImg">ノートの写真</label><div class="stack" style="gap:6px"><input type="file" id="tImg" accept="image/*" capture="environment">
+       ${fv('tImgData')?`<div class="row"><img class="tip-prev" src="${fv('tImgData')}" alt="のせる写真"><button class="btn sm ghost" data-act="tImgDel">写真をやめる</button></div>`:''}
+       <span class="hint">ノートやホワイトボードを写そう。名前が写らないようにね（写真だけでものせられます）</span></div>
+      <label for="tFix">${kind==='まちがい'?'正しいやり方':'コツ'}</label><textarea id="tFix" placeholder="${kind==='まちがい'?'例：分母はひかない。12にそろえてから分子だけひく':'例：答えが出たら2、3、5でわれるか順にチェック'}">${esc(fv('tFix'))}</textarea>
+     </div>
+     <div class="row" style="margin-top:14px"><button class="btn big" data-act="postTip">図鑑にのせる</button><span class="hint">取り組んだステップとミニテストについてのせられます</span></div></div>`;
+  }
+  return head('💡','コツ・まちがい図鑑','先に進んだ人のまちがいとコツが、あとから来る人の助けになる')+subtabs('tips',[['list','みんなの図鑑を見る'],['post','図鑑にのせる']])+body;
+}
+
+/* ===== 児童：単元マップ ===== */
+function vMap(s){
+  const v=sub('map','sched');
+  let body;
+  if(v==='sched')body=`<div class="card"><h3>単元の見通し</h3>
+     <div class="sched">${LESSONS.map(l=>`<div class="les ${l.t===NOW?'now':l.t<NOW?'past':''}"><b>第${l.t}時${l.t===NOW?' きょう':''}</b>${l.k}${l.d&&l.t!==NOW?`<br><span class="muted">${l.d}</span>`:''}</div>`).join('')}</div></div>
+    <div class="card"><h3>ステップとやること</h3><div class="tbl-wrap"><table class="list"><thead><tr><th>ステップ</th><th>やること</th><th>観点</th><th>わたしの丸</th></tr></thead><tbody>
+     ${STEPS.map((_,i)=>{const n=i+1,cur=n===curStep(s);return `<tr class="${cur?'sel':''}"><td>${stepLbl(n)}${cur?' <span class="tag k">いまここ</span>':''}</td><td class="small">教科書・ドリル${n===5?'＋寺田問題①':n===7?'＋寺田問題②':''}</td><td><span class="tag k">知技</span>${n===5||n===7?' <span class="tag t">思判表</span>':''}</td><td class="pen">${s.marks[n+'-0']||''}${s.marks[n+'-1']||''}</td></tr>`}).join('')}
+    </tbody></table></div></div>`;
+  else if(v==='crit')body=CRITERIA.map(c=>{const sc=s.selfCheck[c.id];return `<div class="card crit ${c.id}">
+    <h3><span class="tag ${c.id}">${CRIT_SHORT[c.id]}</span>${CRIT_NAME[c.id]}</h3>
+    <div class="ab"><b>B</b><span>${c.B}</span><b class="a">A</b><span>${c.A}</span></div>
+    <div class="row"><span class="small"><b>いまの自分は？</b></span>${['まだ','B','A'].map(x=>`<button class="chip" data-act="self" data-c="${c.id}" data-v="${x}" aria-pressed="${sc===x}">${x==='まだ'?'まだ':x+'の姿'}</button>`).join('')}</div>
+    <div style="margin-top:10px">${det('crit-'+c.id,'くわしい説明（評価規準・どこで見るか）',`<p class="small">${c.rule}</p><p class="small"><b>どこで見る？</b> ${c.where}</p>`)}</div></div>`}).join('');
+  else body=`<div class="card"><h3>この姿はどの観点のA？</h3><div class="stack">${SORT_Q.map((q,i)=>{const a=state.sortAns[i];return `<div class="box"><p>${esc(q.t)}</p><div class="row" style="margin-top:8px">${['k','t','s'].map(c=>`<button class="chip" data-act="sort" data-i="${i}" data-v="${c}" aria-pressed="${a===c}">${CRIT_SHORT[c]}</button>`).join('')}${a?`<span class="${a===q.a?'ok-t':'bad-t'} small">${a===q.a?'⭕ 正解':'もう一度考えよう'}</span>`:''}</div></div>`}).join('')}</div></div>`;
+  return head('🗺️','単元マップ','何をどこまでできたら、どの評価になるのか')+subtabs('map',[['sched','単元の見通し'],['crit','A・Bのめやす'],['quiz','たしかめクイズ']])+body;
+}
+
+/* ===== 計画（児童・教師共通） ===== */
+function planChart(s){
+  const W=600,H=230,L=40,Rr=16,T=14,B=34,cw=(W-L-Rr)/10,yh=(H-T-B)/8;
+  const X=t=>L+t*cw,Y=v=>T+(8-v)*yh;
+  const act=[...s.actual];act.push(doneOf(s));
+  let g='';
+  for(let v=0;v<=8;v++)g+=`<line x1="${L}" x2="${W-Rr}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${L-8}" y="${Y(v)+4}" text-anchor="end" font-size="11">${v?MARU[v-1]:'0'}</text>`;
+  for(let t=0;t<=10;t++)g+=`<text x="${X(t)}" y="${H-12}" text-anchor="middle" font-size="11">${t}</text>`;
+  g+=`<rect x="${X(NOW)-cw/2}" y="${T}" width="${cw}" height="${H-T-B}" fill="var(--accentSoft)"/>`;
+  g+=`<polyline fill="none" stroke="var(--ink3)" stroke-width="2" stroke-dasharray="5 4" points="${s.plan.map((v,t)=>X(t)+','+Y(v)).join(' ')}"/>`;
+  g+=`<polyline fill="none" stroke="var(--accent)" stroke-width="3" points="${act.map((v,t)=>X(t)+','+Y(v)).join(' ')}"/>`;
+  act.forEach((v,t)=>g+=`<circle cx="${X(t)}" cy="${Y(v)}" r="${t===act.length-1?5.5:3.5}" fill="var(--accent)" stroke="var(--surface)" stroke-width="1.5"/>`);
+  g+=`<text x="${W-Rr}" y="${H-1}" text-anchor="end" font-size="10">時</text>`;
+  return `<div class="chart-wrap"><svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px;min-width:440px" role="img" aria-label="計画と実際の進度のグラフ">${g}</svg></div>
+   <div class="legend"><span><svg width="26" height="8"><line x1="0" x2="26" y1="4" y2="4" stroke="var(--ink3)" stroke-width="2" stroke-dasharray="5 4"/></svg> 計画</span><span><svg width="26" height="8"><line x1="0" x2="26" y1="4" y2="4" stroke="var(--accent)" stroke-width="3"/></svg> 実際</span><span><span class="sw" style="background:var(--accentSoft)"></span>きょう</span></div>`;
+}
+function planAdvice(s,key){
+  const d=doneOf(s),gap=gapOf(s),need=8-d,per=need/2;
+  const h=need===0?'必須課題はぜんぶ終わり！':gap<0?`計画より ${-gap}ステップ おくれているよ`:gap>0?`計画より ${gap}ステップ 先に進んでいるよ`:'ここまで計画どおり！';
+  const pace=need===0?'寺田問題や発展チャレンジ、復習の計画を立てよう。':`のこり <b>${need}ステップ</b>。第7時までに終えるには、1時間に <b>${per.toFixed(1)}ステップ</b>。${per>2?'第8時の復習の時間も使うか、学び方を変えよう。':per>1.5?'少しがんばればとどくよ。':'よゆうがあるよ。'}`;
+  const mk=[];
+  if(s.mini.k<56)mk.push('知識・技能：ミニテストで✖だった問題と同じステップのドリルをやり直す');
+  if(s.mini.t<20)mk.push('思考・判断・表現：寺田問題を使って、図と式で説明する練習を計画に入れる');
+  if(!mk.length)mk.push('ミニテストは目標に近いです。説明の質を上げる発展チャレンジもねらえます');
+  return `<div class="advice ${gap>=0?'ok':''}"><span class="adv-h">${h}</span><p>${pace}</p>
+   ${det(key,`ミニテストの分析から（知識 ${s.mini.k}/70・思考 ${s.mini.t}/30）`,`<ul>${mk.map(x=>`<li>${x}</li>`).join('')}</ul>`)}</div>`;
+}
+function vPlanBody(s,editable){
+  const act=[...s.actual,doneOf(s)],key=editable?'plan':'tplanv',v=sub(key,'chart');
+  const body=v==='chart'?`<div class="card">${planChart(s)}</div>`
+   :`<div class="card"><div class="tbl-wrap"><table class="pt"><thead><tr><th></th>${LESSONS.map(l=>`<th class="${l.t===NOW?'now':''}">第${l.t}時<br><span class="muted">${l.k}</span></th>`).join('')}</tr></thead><tbody>
+    <tr><th>計画</th>${s.plan.map((x,t)=>`<td class="${t===NOW?'now':''}">${editable&&t>=NOW?`<select data-chg="plan" data-t="${t}" aria-label="第${t}時の計画">${[0,1,2,3,4,5,6,7,8].map(o=>`<option value="${o}" ${o===x?'selected':''}>${o?MARU[o-1]:'—'}</option>`).join('')}</select>`:(x?MARU[x-1]:'—')}</td>`).join('')}</tr>
+    <tr><th>実際</th>${s.plan.map((_,t)=>`<td class="${t===NOW?'now':''}">${t<act.length?(act[t]?MARU[act[t]-1]:'—'):''}</td>`).join('')}</tr>
+   </tbody></table></div>
+   ${editable?`<p class="hint" style="margin-top:8px">第${NOW}時から先は、えらんで変えられます。</p><div class="row" style="margin-top:10px"><button class="btn ghost" data-act="planAuto">ヒントどおりに組み直す</button><button class="btn" data-act="planSave">この計画で決める</button>${s.planSaved?'<span class="ok-t small">✓ 保存しました</span>':''}</div>`:`<p class="hint" style="margin-top:10px">${s.planSaved?'第6時に見直し済み':'まだ見直していません'}</p>`}</div>`;
+  return planAdvice(s,key+'-adv')+subtabs(key,[['chart','グラフで見る'],['table',editable?'計画表をなおす':'計画表']])+body;
+}
+function vPlan(s){return head('📅','わたしの計画',`目標点 ${s.target}点。計画とのずれを見て、のこりの時間の使い方を決めよう`)+vPlanBody(s,true)}
+
+/* ===== 変化（児童・教師共通） ===== */
+function growthChart(rs){
+  const W=600,H=200,L=34,Rr=40,T=14,B=30,n=rs.length,cw=(W-L-Rr)/n;
+  const maxLen=Math.max(80,...rs.map(r=>r.text.length));
+  const Yc=v=>T+(4-v)*((H-T-B)/4),Yl=v=>T+(1-v/maxLen)*(H-T-B);
+  let g='';
+  for(let v=0;v<=4;v++)g+=`<line x1="${L}" x2="${W-Rr}" y1="${Yc(v)}" y2="${Yc(v)}" stroke="var(--line)"/><text x="${L-8}" y="${Yc(v)+4}" text-anchor="end" font-size="11">${v}</text>`;
+  g+=`<text x="${W-Rr+8}" y="${Yl(maxLen)+4}" font-size="11">${maxLen}字</text><text x="${W-Rr+8}" y="${Yl(0)+4}" font-size="11">0字</text>`;
+  rs.forEach((r,i)=>{const c=conc(r.mPace+' '+r.mAtt),x=L+i*cw+cw*.2;g+=`<rect x="${x}" y="${Yc(c)}" width="${cw*.6}" height="${Yc(0)-Yc(c)}" rx="3" fill="var(--accentSoft)" stroke="var(--accent)"/><text x="${L+i*cw+cw/2}" y="${H-10}" text-anchor="middle" font-size="11">第${r.t}時</text>`});
+  g+=`<polyline fill="none" stroke="var(--pen)" stroke-width="2.5" points="${rs.map((r,i)=>(L+i*cw+cw/2)+','+Yl(r.text.length)).join(' ')}"/>`;
+  rs.forEach((r,i)=>g+=`<circle cx="${L+i*cw+cw/2}" cy="${Yl(r.text.length)}" r="${i===n-1?5:3.5}" fill="var(--pen)" stroke="var(--surface)" stroke-width="1.5"/>`);
+  return `<div class="chart-wrap"><svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px;min-width:440px" role="img" aria-label="めあての具体さと振り返りの文字数">${g}</svg></div>
+  <div class="legend"><span><span class="sw" style="background:var(--accentSoft);border:1px solid var(--accent)"></span>めあての具体さ（0〜4）</span><span><svg width="26" height="8"><line x1="0" x2="26" y1="4" y2="4" stroke="var(--pen)" stroke-width="2.5"/></svg> 振り返りの文字数</span></div>`;
+}
+const STAMPS=['👍 いいね','✨ 具体的に書けたね','🔍 原因まで書けたね','🚀 次のやり方が楽しみ'];
+const tcm=r=>r.tc?`<div><span class="tcmt">先生：${esc(r.tc)}</span></div>`:'';
+function vStamp(s){
+  const r=s.refl[s.refl.length-1];
+  return `<div class="card"><h3>💬 第${r.t}時の振り返りに先生からひとこと</h3>
+   <div class="stamps">${STAMPS.map(x=>`<button class="chip" data-act="stamp" data-i="${s.id}" data-v="${x}" aria-pressed="${r.tc===x}">${x}</button>`).join('')}</div>
+   <div class="reply-in" style="margin-top:10px"><input type="text" id="tc-${s.id}" data-enter="stampTxt" data-i="${s.id}" placeholder="ことばで送る（例：ホワイトボードの使い方、いいね）" value="${esc(fv('tc-'+s.id))}"><button class="btn sm" data-act="stampTxt" data-i="${s.id}">送る</button></div>
+   <p class="hint" style="margin-top:6px">${esc(s.name)}さんの「おしらせ」と「わたしの変化」にとどきます</p></div>`;
+}
+function vGrowthBody(s,editable){
+  const rs=s.refl,first=rs.find(r=>r.t===1)||rs[0],last=rs[rs.length-1],key=editable?'growth':'tgrowth',v=sub(key,'cmp');
+  const box=(r,lbl,cls)=>`<div class="${cls}"><span class="lbl">${lbl}（第${r.t}時）</span><div><b>めあて</b> ${esc(r.mPace)}／${esc(r.mAtt)}</div><div class="small muted">具体さ ${meter(conc(r.mPace+' '+r.mAtt))}</div><div><b>振り返り</b> ${reflHTML(r)}</div>${tcm(r)}</div>`;
+  let body;
+  if(v==='cmp')body=`<div class="card"><div class="cmp">${box(first,'はじめのころ','')}${box(last,'いちばん新しい','now')}</div></div>
+   ${editable?`<div class="card"><h3>変わったことを言葉にしよう</h3><textarea id="gNote" placeholder="例：はじめは「がんばる」だけだったけど、今は✖の数を見て、プリントか友だちかを決めている">${esc(fv('gNote',s.growthNote))}</textarea><div class="row" style="margin-top:10px"><button class="btn" data-act="gNote">保存</button>${s.growthNote?'<span class="ok-t small">✓ 保存しました</span>':''}</div></div>`:vStamp(s)+(s.growthNote?`<div class="card"><h3>本人が書いた「変わったこと」</h3><p>${esc(s.growthNote)}</p></div>`:'')}`;
+  else if(v==='chart')body=`<div class="card">${growthChart(rs)}</div>`;
+  else if(v==='strat')body=`<div class="card"><div class="tbl-wrap"><table class="sg"><thead><tr><th></th>${rs.map(r=>`<th>第${r.t}時</th>`).join('')}</tr></thead><tbody>${STRATS.map(x=>`<tr><td>${x.k}</td>${rs.map(r=>`<td class="${r.strats.includes(x.k)?'on':''}">${r.strats.includes(x.k)?'●':''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+   <p class="hint" style="margin-top:8px">振り返りの言葉から自動で見つけています。</p></div>`;
+  else body=`<div class="card">${[...rs].reverse().map(r=>`<div class="tli"><div class="when">第${r.t}時</div><div><div class="small"><b>めあて</b> ${esc(r.mPace)}／${esc(r.mAtt)} ${meter(conc(r.mPace+' '+r.mAtt))}</div><div>${reflHTML(r)}</div>${tcm(r)}${r.strats.length?`<div class="row" style="margin-top:4px">${r.strats.map(k=>`<span class="tag">${k}</span>`).join('')}</div>`:''}</div></div>`).join('')}</div>`;
+  return subtabs(key,[['cmp','はじめ ⇄ いま'],['chart','のびのグラフ'],['strat','使った学び方'],['log','ぜんぶの記録']])+body;
+}
+function vGrowth(s){return head('🌱','わたしの変化','めあてと振り返りが、どう変わってきたかを見てみよう')+vGrowthBody(s,true)}
+
+/* ===== 児童：みんなの学び ===== */
+const replies=p=>p.replies.length?`<div class="replies">${p.replies.map(r=>`<div class="small"><b>${esc(r.who)}</b>${r.who==='先生'?'':'さん'}：${esc(r.text)}</div>`).join('')}</div>`:'';
+function vClass(s){
+  const v=sub('class','where'),cs=curStep(s);
+  let body;
+  if(v==='where')body=`<div class="card"><div class="cols">${STEPS.map((n,i)=>{const k=i+1;const kids=students.filter(x=>curStep(x)===k&&!(k===8&&doneOf(x)===8));return `<div class="col ${k===cs?'me':''}"><h4>${MARU[i]}<br>${n}</h4>${kids.map(x=>`<div class="kid ${x.id===s.id?'me':''}" title="${esc(x.note)}">${face(x.signal)}${esc(x.name)}${x.id!==s.id&&canTeach(x).includes(cs)?'<span class="t">教</span>':''}</div>`).join('')}</div>`}).join('')}</div>
+   <div class="legend"><span><span class="face" aria-hidden="true">😊</span> すいすい</span><span><span class="face" aria-hidden="true">🤔</span> もやもや</span><span><span class="face" aria-hidden="true">😣</span> こまった</span><span><b style="color:var(--ok)">教</b> ${MARU[cs-1]}を教えられる（教科書もドリルも○）</span>${students.filter(x=>doneOf(x)===8).length?`<span>ぜんぶ終えた人：${students.filter(x=>doneOf(x)===8).length}人</span>`:''}</div></div>`;
+  else if(v==='help'){
+    const teachers=students.filter(x=>x.id!==s.id&&canTeach(x).includes(cs));
+    const asking=students.filter(x=>x.id!==s.id&&x.signal==='red'&&canTeach(s).includes(curStep(x)));
+    body=`<div class="grid2">
+     <div class="card"><h3>🙋 ${MARU[cs-1]}を教えてくれる人</h3>${vMyCall(s)||(teachers.length?`<p class="hint" style="margin-bottom:8px">名前をおすと「教えて」が相手にとどくよ</p><div class="row">${teachers.slice(0,8).map(x=>`<button class="chip" data-act="callKid" data-i="${x.id}">${face(x.signal)}${esc(x.name)}さん</button>`).join('')}</div>`:'<p class="empty">まだいません。先に進んでいる人が増えると出てきます。</p>')}</div>
+     <div class="card"><h3>🤝 あなたが力になれそうな人</h3>${asking.length?`<div class="stack">${asking.slice(0,4).map(x=>`<div class="box"><div class="small">${sigChip('red')} <b>${esc(x.name)}さん</b>（${MARU[curStep(x)-1]}）${esc(x.note)}</div>${openCall(x.id)?'<span class="hint">だれかが向かっています</span>':`<button class="btn sm" style="margin-top:6px" data-act="offer" data-i="${x.id}">教えに行く</button>`}</div>`).join('')}</div>`:'<p class="empty">いまはいません。</p>'}</div></div>`;
+  }else body=`<div class="card"><div class="row"><select id="pKind" aria-label="種類"><option>気づき</option><option>質問</option></select><select id="pStep" aria-label="ステップ">${STEPS.map((_,i)=>`<option value="${i+1}" ${i+1===cs?'selected':''}>${MARU[i]}</option>`).join('')}</select><input type="text" id="pText" data-enter="post" style="flex:1;min-width:160px" placeholder="気づいたこと、聞きたいこと" value="${esc(fv('pText'))}"><button class="btn" data-act="post">のせる</button></div>
+    <div style="margin-top:10px">${db.board.map(p=>`<div class="post"><div><span class="tag ${p.kind==='質問'?'t':'k'}">${p.kind}</span> <span class="small muted">${MARU[p.step-1]} ${esc(p.who)}さん</span><div>${esc(p.text)}</div>${replies(p)}
+     <div class="reply-in"><input type="text" id="rp-${p.id}" data-enter="reply" data-id="${p.id}" placeholder="${p.kind==='質問'?'こたえる・ヒントを書く':'へんじを書く'}" aria-label="へんじ" value="${esc(fv('rp-'+p.id))}"><button class="btn sm ghost" data-act="reply" data-id="${p.id}">へんじ</button></div></div><button class="like" data-act="like" data-id="${p.id}" aria-pressed="${p.likedBy.includes(s.id)}">なるほど ${p.like+p.likedBy.length}</button></div>`).join('')}</div></div>`;
+  return head('👥','みんなの学び','だれがどこにいて、何を考えているか')+subtabs('class',[['where','いまどこ？'],['help','教えあい'],['board','気づき・質問']])+body;
+}
+
+/* ===== 教師：クラスの進度 ===== */
+/* 児童の操作がすぐ流れてくる「いまのうごき」 */
+function vFeed(){
+  const l=db.log.slice(0,6);
+  return `<div class="card"><h3>⚡ いまのうごき <span class="hint" style="font-weight:400">児童が丸つけ・共有・投稿をすると、ここにすぐ出ます</span></h3>
+   ${l.length?`<div class="feed">${l.map(e=>`<div class="fi"><div class="h">${esc(e.text)}<span class="when">${ago(e.at)}</span></div></div>`).join('')}</div>`:'<p class="empty">まだうごきはありません。児童の画面を別のタブで開いて操作してみてください。</p>'}</div>`;
+}
+function vTClass(){
+  const avg=students.reduce((a,s)=>a+doneOf(s),0)/students.length;
+  const late=students.filter(s=>gapOf(s)<=-2).length,red=students.filter(s=>s.signal==='red').length,ac=students.filter(isACand).length,calls=db.calls.filter(c=>c.to==='T'&&(c.status==='open'||c.status==='coming')).length;
+  const v=sub('tclass','map');
+  const map=`<div class="card"><div class="tbl-wrap"><table class="hm"><thead><tr><th></th>${STEPS.map((n,i)=>`<th colspan="2" title="${n}">${MARU[i]}</th><th></th>`).join('')}<th>進度</th></tr>
+    <tr><th></th>${STEPS.map(()=>'<th>教</th><th>ド</th><th></th>').join('')}<th></th></tr></thead><tbody>
+   ${students.map(s=>{const d=doneOf(s);return `<tr data-act="openKid" data-i="${s.id}"><td class="name">${face(s.signal)} ${nm(s)}</td>${STEPS.map((_,i)=>[0,1].map(k=>{const n=i+1,m=s.marks[n+'-'+k];const cls=['c',m?{'○':'o','△':'t','✖':'x'}[m]:(n===d+1?'cur':''),(n===s.plan[5]&&k===1)?'pe':''].join(' ');return `<td class="${cls}">${m||''}</td>`}).join('')+'<td class="sp"></td>').join('')}<td class="num small"><b>${d}</b>/8</td></tr>`}).join('')}
+   </tbody></table></div>
+   <div class="legend"><span><span class="sw" style="background:var(--okSoft)"></span>○</span><span><span class="sw" style="background:var(--warnSoft)"></span>△</span><span><span class="sw" style="background:var(--badSoft)"></span>✖</span><span><span class="sw" style="outline:2px solid var(--accent);outline-offset:-2px"></span>取り組み中</span><span><span class="sw" style="box-shadow:inset -3px 0 0 var(--pen)"></span>前時までの計画</span><span>教＝教科書　ド＝ドリル</span><span>名前をクリック → その子の画面</span></div></div>`;
+  const list=`<div class="card"><div class="tbl-wrap"><table class="list"><thead><tr><th>名前</th><th>進み具合（赤線＝計画）</th><th>ずれ</th><th>ミニ 知/思</th><th>いまの自分</th></tr></thead><tbody>
+   ${students.map(s=>`<tr data-act="openKid" data-i="${s.id}"><td style="white-space:nowrap">${nm(s)}</td><td>${gauge(s)}</td><td>${gapChip(gapOf(s))}</td><td class="num small">${s.mini.k}/${s.mini.t}</td><td class="small">${sigChip(s.signal)} ${esc(s.note)}</td></tr>`).join('')}
+   </tbody></table></div></div>`;
+  return head('📊','クラスの進度',`第${NOW}時・${students.length}人`)+`<div class="tiles">
+   <div class="tile"><span>平均の進度</span><b class="num">${avg.toFixed(1)}<small> / 8</small></b></div>
+   <div class="tile ${calls?'alert':''}"><span>🙋 先生をよんでいる</span><b class="num">${calls}人</b><em>上のおしらせで対応</em></div>
+   <button class="tile ${late?'alert':''}" data-act="ttab" data-v="plan"><span>計画より2つ以上おくれ</span><b class="num">${late}人</b><em>計画のずれへ →</em></button>
+   <button class="tile ${red?'alert':''}" data-act="ttab" data-v="voice"><span>「こまった」</span><b class="num">${red}人</b><em>考えと声へ →</em></button>
+   <button class="tile" data-act="ttab" data-v="adv"><span>A評価・発展の候補</span><b class="num">${ac}人</b><em>A評価・発展へ →</em></button>
+  </div>`+vFeed()+subtabs('tclass',[['map','○△✖マップ'],['list','進み具合といまの考え']])+(v==='map'?map:list);
+}
+
+/* ===== 教師：授業の記録（1問テスト・ミニ授業の履歴） ===== */
+function vTLesson(){
+  const t=+fv('lSel',String(NOW)),L=db.lessons[t]||{},les=LESSONS[t];
+  const x={};for(let n=1;n<=8;n++){x[n]=0;students.forEach(s=>[0,1].forEach(k=>{if(s.marks[n+'-'+k]==='✖')x[n]++}))}
+  const top=Object.entries(x).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const f=(k,d)=>fv('l'+k+'-'+t,L[k]??d??'');
+  const hist=LESSONS.filter(l=>{const r=db.lessons[l.t];return r&&(r.quiz||r.mini||r.memo)});
+  return head('📝','授業の記録','毎時間の1問テストとミニ授業を残しておく（児童の画面には出ません）')+`<div class="split">
+   <div class="stack">
+    <div class="card"><h3>記録する時間
+      <select id="lSel" data-chg="lSel" aria-label="時間をえらぶ">${LESSONS.map(l=>`<option value="${l.t}" ${l.t===t?'selected':''}>第${l.t}時 ${l.k}${l.t===NOW?'（きょう）':''}</option>`).join('')}</select></h3>
+     <div class="tf">
+      <label for="lquiz-${t}">1問テスト</label><input type="text" id="lquiz-${t}" placeholder="例：5/6 − 1/4 ＝ ？" value="${esc(f('quiz'))}">
+      <label for="lans-${t}">答え</label><input type="text" id="lans-${t}" placeholder="例：7/12" value="${esc(f('ans'))}">
+      <label for="lok-${t}">正解した人数</label><div class="row"><input type="number" id="lok-${t}" min="0" max="${students.length}" style="width:90px" value="${esc(f('ok'))}"><span class="hint">/ ${students.length}人（わかれば）</span></div>
+      <label for="lmini-${t}">ミニ授業</label><textarea id="lmini-${t}" rows="3" placeholder="例：ひき算も、まず通分。答えが出たら約分できるか確かめる">${esc(f('mini'))}</textarea>
+      <label for="lmemo-${t}">メモ</label><textarea id="lmemo-${t}" rows="2" placeholder="例：寺田問題②を出した／ホワイトボードの使い方を話した">${esc(f('memo'))}</textarea>
+     </div>
+     <div class="row" style="margin-top:12px"><button class="btn" data-act="saveLesson" data-v="${t}">第${t}時の記録を保存</button>${les?`<span class="hint">${les.k}${les.d?'・'+les.d:''}</span>`:''}</div></div>
+    <div class="card"><h3>ミニ授業の候補 <span class="hint" style="font-weight:400">✖が多いステップ</span></h3><div class="stack">${top.map(([n,c])=>`<div class="row"><b>${stepLbl(+n)}</b><span class="bad-t num">✖${c}</span></div>`).join('')}</div></div>
+   </div>
+   <div class="card"><h3>これまでの記録</h3><div class="tbl-wrap"><table class="list"><thead><tr><th>時</th><th>1問テスト</th><th>正解</th><th>ミニ授業・メモ</th></tr></thead><tbody>
+    ${hist.map(l=>{const r=db.lessons[l.t];return `<tr data-act="lPick" data-v="${l.t}" class="${l.t===t?'sel':''}"><td class="num" style="white-space:nowrap"><b>第${l.t}時</b><br><span class="small muted">${l.k}</span></td><td class="small">${esc(r.quiz)||'—'}${r.ans?`<br><span class="muted">答え ${esc(r.ans)}</span>`:''}</td><td class="num small">${r.ok?esc(r.ok)+'人':''}</td><td class="small">${esc(r.mini)}${r.memo?`<br><span class="muted">${esc(r.memo)}</span>`:''}</td></tr>`}).join('')||'<tr><td colspan="4" class="empty">まだ記録がありません</td></tr>'}
+   </tbody></table></div></div></div>`;
+}
+
+/* ===== 教師：考えと声 ===== */
+function vTVoice(){
+  const v=sub('tvoice','voice');
+  let body;
+  if(v==='voice'){
+    const col=sg=>{const l=students.filter(s=>s.signal===sg);return `<div class="card"><h3>${sigChip(sg)} <span class="num">${l.length}人</span></h3><div class="feed">${l.map(s=>`<div class="fi"><div class="h">${nm(s)}<span class="muted" style="font-weight:400">${MARU[curStep(s)-1]}</span></div>${esc(s.note)}</div>`).join('')||'<span class="empty">いません</span>'}</div></div>`};
+    body=`<div class="cols3">${col('red')}${col('yellow')}${col('green')}</div>`;
+  }else if(v==='pair'){
+    const pairs=[];
+    students.filter(s=>s.signal==='red').forEach(s=>{const c=curStep(s);const t=students.find(o=>o.signal==='green'&&canTeach(o).includes(c)&&!pairs.some(p=>p.t===o));pairs.push({s,t,c})});
+    body=`<div class="card"><h3>こまった ⇄ 教えられる</h3><div class="stack">${pairs.map(p=>`<div class="box"><b>${nm(p.s)}</b>（${MARU[p.c-1]}）<span class="small muted">${esc(p.s.note)}</span><br>→ ${p.t?`<b>${nm(p.t)}</b>さんなら${MARU[p.c-1]}が全部○です`:'<span class="bad-t">教えられる児童がまだいません。先生が直接入る候補</span>'}</div>`).join('')||'<span class="empty">「こまった」の児童はいません</span>'}</div></div>`;
+  }else if(v==='tips'){
+    body=`<div class="card"><p class="small" style="margin-bottom:12px">まだ投稿がないステップ：<b>${MARU.filter((_,i)=>!db.tips.some(t=>t.step===i+1)).join(' ')||'なし'}</b>　<span class="hint">「先生おすすめ」にすると、児童の画面で上に出ます</span></p>
+     <div class="tips">${[...db.tips].sort((x,y)=>y.id-x.id).map(t=>tipCard(t,true)).join('')}</div></div>`;
+  }else body=`<div class="card">${db.board.map(p=>`<div class="post"><div><span class="tag ${p.kind==='質問'?'t':'k'}">${p.kind}</span> <span class="small muted">${MARU[p.step-1]} ${esc(p.who)}</span><div>${esc(p.text)}</div>${replies(p)}
+     <div class="reply-in"><input type="text" id="rp-${p.id}" data-enter="reply" data-id="${p.id}" placeholder="先生からのへんじ" aria-label="へんじ" value="${esc(fv('rp-'+p.id))}"><button class="btn sm ghost" data-act="reply" data-id="${p.id}">へんじ</button></div></div><span class="small muted">なるほど ${p.like+p.likedBy.length}</span></div>`).join('')}</div>`;
+  return head('💬','考えと声','児童が共有した「いまの自分」と、教えあいのつなぎ方')+subtabs('tvoice',[['voice','3色の声'],['pair','つなぐ提案'],['tips','図鑑'],['board','ボード']])+body;
+}
+
+/* ===== 教師：計画のずれ ===== */
+function vTPlan(){
+  const list=[...students].sort((a,b)=>gapOf(a)-gapOf(b));
+  const sel=students[state.planSel??list[0].id];
+  return head('📅','計画のずれ','前の時間までの計画と実際の差。ずれが大きい順')+`<div class="split">
+   <div class="card"><div class="tbl-wrap"><table class="list"><thead><tr><th>名前</th><th>ずれ</th><th>ペース</th><th>見直し</th></tr></thead><tbody>
+   ${list.map(s=>{const p=(8-doneOf(s))/2;return `<tr data-act="planRow" data-i="${s.id}" class="${sel.id===s.id?'sel':''}"><td style="white-space:nowrap">${face(s.signal)} ${nm(s)}</td><td>${gapChip(gapOf(s))}</td><td class="num small ${p>2?'bad-t':''}">${p.toFixed(1)}/時</td><td class="small">${s.planSaved?'<span class="ok-t">済</span>':'まだ'}</td></tr>`}).join('')}
+   </tbody></table></div></div>
+   <div class="stack"><h3>${nm(sel)}さんの計画</h3>${vPlanBody(sel,false)}</div></div>`;
+}
+
+/* ===== 教師：A評価・発展 ===== */
+function vTAdv(){
+  const cand=students.filter(isACand),near=students.filter(s=>!isACand(s)&&doneOf(s)>=5&&okRate(s)>=.6),v=sub('tadv','cand');
+  const card=s=>`<div class="card"><h3>${nm(s)}</h3><p class="small muted">進度 ${doneOf(s)}/8・○率 ${Math.round(okRate(s)*100)}%・ミニ ${s.mini.k}/${s.mini.t}・寺田① ${s.terada[1]||'まだ'}</p>
+   <div class="row" style="margin-top:8px">${s.challenges.map(id=>`<span class="chip">✓ ${CH.find(c=>c.id===id).title}</span>`).join('')||'<span class="hint">まだ渡していません</span>'}</div>
+   <div class="row" style="margin-top:10px"><select id="ch-${s.id}" aria-label="渡すチャレンジ">${CH.filter(c=>!s.challenges.includes(c.id)).map(c=>`<option value="${c.id}" ${fv('ch-'+s.id)===c.id?'selected':''}>${CRIT_SHORT[c.crit]}｜${c.title}</option>`).join('')}</select><button class="btn sm" data-act="assign" data-i="${s.id}">渡す</button>
+   <button class="chip" data-act="role" data-i="${s.id}" aria-pressed="${s.teacherRole}">先生役にする</button></div></div>`;
+  let body;
+  if(v==='cand')body=`<div class="grid2">${cand.map(card).join('')||'<div class="card empty">候補はいません</div>'}</div>`;
+  else if(v==='near')body=`<div class="card">${near.length?`<div class="row">${near.map(s=>`<span class="chip">${nm(s)}（${doneOf(s)}/8・思${s.mini.t}）</span>`).join('')}</div>`:'<p class="empty">いません</p>'}</div>`;
+  else body=`<div class="card"><div class="stack">${CH.map(c=>`<div class="box"><b>${c.title}</b> <span class="tag ${c.crit}">${CRIT_NAME[c.crit]}</span><div class="small" style="margin-top:4px">${c.body}</div></div>`).join('')}</div>
+   <p class="hint" style="margin-top:10px">渡したチャレンジは、その子の「きょうの学習 → ②学習」に出ます。</p></div>`;
+  return head('⭐','A評価・発展','候補：第6ステップ以上・○率70%以上・ミニテスト思考21点以上')+subtabs('tadv',[['cand',`候補（${cand.length}人）`],['near',`もう少し（${near.length}人）`],['ch','チャレンジ一覧']])+body;
+}
+
+/* ===== 教師：振り返りの変化 ===== */
+function vTGrowth(){
+  const s=students[state.tSel];
+  const rows=students.map(x=>{const f=x.refl.find(r=>r.t===1)||x.refl[0],l=x.refl[x.refl.length-1];const a=conc(f.mPace+' '+f.mAtt),b=conc(l.mPace+' '+l.mAtt);return{x,a,b,d:b-a}}).sort((p,q)=>p.d-q.d);
+  return head('🌱','振り返りの変化','めあての具体さの変化が小さい子から並べています')+`<div class="split">
+   <div class="card"><table class="list"><thead><tr><th>名前</th><th>第1時 → 最新</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr data-act="tSel" data-i="${r.x.id}" class="${r.x.id===state.tSel?'sel':''}"><td style="white-space:nowrap">${nm(r.x)}</td><td>${meter(r.a)} → ${meter(r.b)} ${r.d<=0?'<span class="bad-t small">変化なし</span>':''}</td></tr>`).join('')}</tbody></table></div>
+   <div class="stack"><h3>${nm(s)}さん</h3>${vGrowthBody(s,false)}</div></div>`;
+}
+
+/* ===== 描画 =====
+   画面全体を innerHTML で作り直すのをやめ、変わったところだけを書きかえる（morph）。
+   入力中の文字・カーソル・スクロール位置が消えず、古いPCでも軽い。 */
+function morphKids(a,b){
+  const ac=[...a.childNodes],bc=[...b.childNodes];
+  bc.forEach((n,i)=>{if(i<ac.length)morph(ac[i],n);else a.appendChild(n)});
+  for(let i=bc.length;i<ac.length;i++)ac[i].remove();
+}
+function morph(a,b){
+  if(a.nodeType!==b.nodeType||a.nodeName!==b.nodeName){a.replaceWith(b);return}
+  if(a.nodeType!==1){if(a.nodeValue!==b.nodeValue)a.nodeValue=b.nodeValue;return}
+  for(const {name} of [...a.attributes])if(!b.hasAttribute(name))a.removeAttribute(name);
+  for(const {name,value} of [...b.attributes])if(a.getAttribute(name)!==value)a.setAttribute(name,value);
+  const tag=a.nodeName,focused=a===document.activeElement;
+  if(tag==='TEXTAREA'){if(!focused&&a.value!==b.value)a.value=b.value;return}
+  if(tag==='INPUT'){if(!focused&&a.value!==b.value)a.value=b.value;return}
+  morphKids(a,b);
+  if(tag==='SELECT'&&!focused){const o=b.querySelector('option[selected]');a.value=o?o.value:(a.options[0]?.value??'')}
+}
+let rq=0;
+/* 何回よばれても1回だけ描く（うしろのタブは rAF が止まることがあるので、setTimeout でも予約する） */
+function render(){if(rq)return;rq=1;requestAnimationFrame(draw);setTimeout(draw,50)}
+function draw(){
+  if(!rq)return;
+  rq=0;
+  let html;
+  if(state.mode==='student'&&state.me==null)html=vHeader()+vPick();
+  else{
+    const s=students[state.me];state.cur=s;
+    const body=state.mode==='student'
+     ?{today:vToday,tips:vTips,map:vMap,plan:vPlan,growth:vGrowth,class:vClass}[state.tab](s)
+     :{class:vTClass,lesson:vTLesson,voice:vTVoice,plan:vTPlan,adv:vTAdv,growth:vTGrowth}[state.ttab]();
+    const zt=state.zoom!=null&&db.tips.find(x=>x.id===state.zoom);
+    html=vHeader()+`<div class="wrap">${vNav()}<main>${state.inbox?vInbox():''}${vCalls()}${body}</main></div>`+(zt?`<div class="zoom" data-act="unzoom" role="dialog" aria-label="写真"><img src="${zt.img}" alt="ノートの写真"><span class="zoom-x">とじる ✕</span></div>`:'');
+  }
+  const t=document.createElement('div');t.innerHTML=html;
+  morphKids(document.getElementById('app'),t);
+}
+/* 通知は画面を描き直さずに出す（入力中の文字が消えないように） */
+let toastT;
+function toast(m){const el=document.getElementById('toast');el.textContent=m;el.hidden=false;el.classList.remove('show');void el.offsetWidth;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>{el.hidden=true},3000)}
+const val=id=>document.getElementById(id)?.value??'';
+const top0=()=>window.scrollTo(0,0);
+/* 書きかけはタブごとに残す（再読みこみ・通信の不調でも消えない） */
+const formKey=()=>'form-'+meKey();
+function loadForm(){try{state.form=JSON.parse(ss.get(formKey())||'{}')}catch(e){state.form={}}}
+let formT;
+function keepForm(){clearTimeout(formT);formT=setTimeout(()=>ss.set(formKey(),JSON.stringify(state.form)),300)}
+function clearForm(...ids){ids.forEach(k=>delete state.form[k]);keepForm()}
+/* ほかの画面から届いた新しいおしらせ・よびだしを知らせる */
+let seen=new Set();
+function markSeen(){db.msgs.forEach(m=>seen.add(m.id));db.calls.forEach(c=>seen.add(c.id+c.status))}
+function announce(){
+  if(state.mode==='student'&&state.me==null){markSeen();return}
+  const k=meKey();
+  const m=db.msgs.filter(x=>x.to===k&&!seen.has(x.id)).pop();
+  const c=db.calls.filter(x=>x.to===k&&x.status==='open'&&!seen.has(x.id+x.status)).pop();
+  if(c)toast(`📣 ${students[c.from].name}さんが${k==='T'?'先生をよんでいます':'教えてほしいって'}`);
+  else if(m)toast('🔔 '+m.text);
+  markSeen();
+  const lv=document.getElementById('live');if(lv){lv.classList.remove('pulse');void lv.offsetWidth;lv.classList.add('pulse')}
+}
+function setMe(i){state.me=i;if(i==null){try{sessionStorage.removeItem('me')}catch(e){}}else ss.set('me',String(i));loadForm()}
+
+function act(el){
+  const a=el.dataset.act,v=el.dataset.v,s=students[state.me],me=meKey();
+  switch(a){
+   case 'mode':state.mode=v;ss.set('mode',v);state.inbox=false;loadForm();top0();break;
+   case 'iam':setMe(+el.dataset.i);state.tab='today';top0();toast(`こんにちは、${students[state.me].name}さん！`);break;
+   case 'whoami':setMe(null);state.inbox=false;top0();break;
+   case 'reset':if(!confirm('試作データをはじめの状態にもどします。よいですか？'))return;try{localStorage.removeItem(STORE)}catch(e){}location.reload();return;
+   case 'inbox':state.inbox=!state.inbox;if(state.inbox){myMsgs().forEach(m=>m.read=true)}break;
+   case 'tab':state.tab=v;if(v==='tips'){state.sub.tips='list';state.tipFilter='cur'}top0();break;
+   case 'ttab':state.ttab=v;top0();break;
+   case 'sub':state.sub[el.dataset.k]=v;if(el.dataset.go){state.tab=el.dataset.go;top0()}break;
+   case 'flow':if(curFlow(s)==='check')s.checkSeen=true;s.flow=v;top0();break;
+   case 'gWho':{const i=s.gWho.indexOf(v);i<0?s.gWho.push(v):s.gWho.splice(i,1);break}
+   case 'gTool':{const i=s.gTools.indexOf(v);i<0?s.gTools.push(v):s.gTools.splice(i,1);if(v==='その他'&&i<0)setTimeout(()=>document.getElementById('gOther')?.focus(),80);break}
+   case 'ifChip':{const k=el.dataset.k,cur=(state.form[k]??s.goal?.ifs?.[k]??'').trim();if(!cur.includes(v))state.form[k]=cur?cur+'、'+v:v;keepForm();break}
+   case 'saveGoal':{const how=val('gHow');s.gOther=val('gOther').trim()||s.gOther;const ifs={};IFS.forEach(x=>ifs[x.k]=val(x.k).trim());
+     if(IFS.some(x=>!ifs[x.k])){toast('「もしも」の3つにも答えよう');document.getElementById(IFS.find(x=>!ifs[x.k]).k)?.focus();return}
+     s.goal={step:+val('gStep'),pace:'',how,att:composeAtt(s,how),ifs};s.flow='work';logEv(`${s.name}：めあて「${MARU[s.goal.step-1]}まで」`);top0();toast('めあてを決めました。②学習をはじめよう！');break}
+   case 'tipKind':state.tipKind=v;break;
+   case 'tipFilter':state.tipFilter=v;break;
+   case 'tipFrom':{const k=s.todayMarks.filter(k=>['△','✖'].includes(s.marks[k])).slice(-1)[0];if(k){const [n,t]=k.split('-');state.form.tStep=n;state.form.tSrc=t==='0'?'教科書':'ドリル'}state.tipKind='まちがい';state.tab='tips';state.sub.tips='post';top0();break}
+   case 'postTip':{const fix=val('tFix').trim(),mis=state.tipKind==='まちがい'?val('tMis').trim():'';
+     const img=state.form.tImgData||'';
+     if(!img&&(!fix||(state.tipKind==='まちがい'&&!mis))){toast(state.tipKind==='まちがい'?'「どうまちがえた」と「正しいやり方」を書こう':'コツを書こう');return}
+     const step=+val('tStep');
+     db.tips.unshift({id:Date.now(),who:s.name,step,src:val('tSrc'),kind:state.tipKind,prob:val('tProb').trim(),mis,fix,img,useful:0,pick:false,usefulBy:[]});
+     logEv(`${s.name}：図鑑に${state.tipKind}をのせた（${tipStep(step)}）`);
+     clearForm('tProb','tMis','tFix','tImgData');state.sub.tips='list';state.tipFilter='all';toast('図鑑にのせました。あとから来る人の助けになります');break}
+   case 'useful':{const t=db.tips.find(x=>x.id===+el.dataset.id),i=t.usefulBy.indexOf(state.me);
+     if(i<0){t.usefulBy.push(state.me);send(idOf(t.who),`👍 ${s.name}さんが、あなたの${t.kind}（${tipStep(t.step)}）を「役に立った」って`)}else t.usefulBy.splice(i,1);break}
+   case 'pick':{const t=db.tips.find(x=>x.id===+el.dataset.id);t.pick=!t.pick;if(t.pick)send(idOf(t.who),`⭐ あなたの${t.kind}（${tipStep(t.step)}）が「先生おすすめ」になりました`);break}
+   case 'mark':{const k=el.dataset.k,cur=s.marks[k],before=doneOf(s);
+     if(cur===v){delete s.marks[k];s.todayMarks=s.todayMarks.filter(x=>x!==k)}else{s.marks[k]=v;if(!s.todayMarks.includes(k))s.todayMarks.push(k)}
+     const after=doneOf(s),[n,tk]=k.split('-');
+     if(cur!==v)logEv(`${s.name}：${MARU[n-1]}${TASKS[tk]} ${v}`);
+     if(after>before){logEv(`${s.name}：${MARU[after-1]} クリア`);toast(after===8?'🎉 ①〜⑧ ぜんぶクリア！ 寺田問題やチャレンジに進もう':`🎉 ${MARU[after-1]} クリア！ つぎは ${MARU[after]} ${STEPS[after]}`)}
+     break}
+   case 'terada':s.terada[v]=s.terada[v]?'提出':'取り組み中';logEv(`${s.name}：${TERADA[v].title} ${s.terada[v]}`);toast(s.terada[v]==='提出'?'提出しました':'取り組み中にしました');break;
+   case 'sig':if(s.signal!==v){s.signal=v;logEv(`${s.name}：いまの自分「${SIG[v]}」`);toast(`「${SIG[v]}」をみんなと先生に知らせたよ`)}break;
+   case 'note':s.note=val('noteIn').trim();clearForm('noteIn');logEv(`${s.name}：「${s.note}」`);toast('みんなと先生に共有しました');break;
+   case 'saveRefl':{const plus=val('rPlus').trim(),minus=val('rMinus').trim(),next=val('rNext').trim();
+     if(!plus&&!minus){toast('「＋」か「−」を書こう');document.getElementById('rPlus')?.focus();return}
+     if(!next){toast('「→ 次の時間にどうするか」も書こう');document.getElementById('rNext')?.focus();return}
+     clearForm('rPlus','rMinus','rNext');
+     const g=s.goal||{step:curStep(s),pace:'',att:''},t=[plus&&'＋'+plus,minus&&'−'+minus,'→'+next].filter(Boolean).join(' ');
+     const r={t:NOW,mPace:g.pace||stepLbl(g.step)+'まで',mAtt:g.att||'—',text:t,plus,minus,next,strats:detect(g.att+t)};
+     s.refl=s.refl.filter(x=>x.t!==NOW);s.refl.push(r);s.reflDone=true;logEv(`${s.name}：振り返りを出した`);toast('振り返りを出しました');break}
+   case 'self':s.selfCheck[el.dataset.c]=v;break;
+   case 'sort':state.sortAns[el.dataset.i]=v;break;
+   case 'planAuto':{const d=doneOf(s),need=8-d;s.plan[6]=Math.min(8,d+Math.ceil(need/2));s.plan[7]=s.plan[8]=s.plan[9]=s.plan[10]=8;s.planSaved=false;toast('第6・7時で⑧まで終える計画にしました');break}
+   case 'planSave':s.planSaved=true;logEv(`${s.name}：計画を見直した`);toast('計画の見直しを保存しました');break;
+   case 'gNote':s.growthNote=val('gNote');clearForm('gNote');toast('保存しました');break;
+   case 'post':{const t=val('pText').trim();if(!t){toast('内容を書いてからのせよう');return}clearForm('pText');
+     const kind=val('pKind');db.board.unshift({id:uid(),who:s.name,step:+val('pStep'),kind,text:t,like:0,likedBy:[],replies:[]});
+     logEv(`${s.name}：ボードに${kind}「${t}」`);if(kind==='質問')send('T',`❓ ${s.name}さんの質問：${t}`);break}
+   case 'like':{const p=db.board.find(x=>x.id===el.dataset.id),i=p.likedBy.indexOf(state.me);
+     if(i<0){p.likedBy.push(state.me);send(idOf(p.who),`💡 ${s.name}さんが、あなたの${p.kind}に「なるほど」`)}else p.likedBy.splice(i,1);break}
+   case 'reply':{const id=el.dataset.id,p=db.board.find(x=>x.id===id),t=val('rp-'+id).trim();if(!t){toast('へんじを書いてからおそう');return}
+     clearForm('rp-'+id);const who=me==='T'?'先生':s.name;p.replies.push({who,text:t});
+     send(idOf(p.who),`💬 ${who}${me==='T'?'':'さん'}が、あなたの${p.kind}にへんじ：${t}`);logEv(`${who}：「${p.text.slice(0,12)}…」にへんじ`);break}
+   case 'callT':{if(openCall(s.id))return;db.calls.push({id:uid(),from:s.id,to:'T',step:curStep(s),note:s.note,status:'open',at:Date.now()});
+     if(s.signal!=='red')s.signal='red';logEv(`${s.name}：🙋 先生をよんだ`);toast('先生に知らせたよ。待つあいだは教科書の例を読みなおそう');break}
+   case 'callKid':{const x=+el.dataset.i;if(openCall(s.id)){toast('いまのよびだしが終わってから、つぎの人をよぼう');return}
+     db.calls.push({id:uid(),from:s.id,to:x,step:curStep(s),note:s.note,status:'open',at:Date.now()});
+     logEv(`${s.name}：${students[x].name}さんに「教えて」`);toast(`${students[x].name}さんに「教えて」をとどけたよ`);break}
+   case 'offer':{const x=+el.dataset.i;if(openCall(x))return;
+     db.calls.push({id:uid(),from:x,to:s.id,step:curStep(students[x]),note:students[x].note,status:'coming',at:Date.now()});
+     send(x,`🏃 ${s.name}さんが教えに来てくれるよ！`);logEv(`${s.name}：${students[x].name}さんに教えに行く`);toast(`${students[x].name}さんに「行くよ」と伝えたよ`);break}
+   case 'callGo':{const c=db.calls.find(x=>x.id===el.dataset.id);if(!c)return;c.status='coming';
+     send(c.from,`🏃 ${me==='T'?'先生':s.name+'さん'}が来てくれるよ！`);logEv(`${me==='T'?'先生':s.name}：${students[c.from].name}さんのところへ`);break}
+   case 'callNo':{const c=db.calls.find(x=>x.id===el.dataset.id);if(!c)return;c.status='declined';
+     send(c.from,`🙏 ${s.name}さんは、いま手がはなせないみたい。ほかの人か先生にきいてみよう`);break}
+   case 'callDone':{const c=db.calls.find(x=>x.id===el.dataset.id);if(!c)return;c.status='done';
+     if(c.from===me){if(c.to!=='T')send(c.to,`😊 ${s.name}さんから「ありがとう！ 解決したよ」`);toast('解決してよかったね！ わかったことを図鑑にのせると、みんなの助けになるよ')}
+     else{if(me!=='T')logEv(`${s.name}：${students[c.from].name}さんに教えた`);send(c.from,`✅ ${me==='T'?'先生':s.name+'さん'}との相談がおわりました`)}break}
+   case 'callCancel':{const c=db.calls.find(x=>x.id===el.dataset.id);if(c)c.status='canceled';break}
+   case 'openKid':state.me=+el.dataset.i;state.mode='student';ss.set('mode','student');ss.set('me',String(state.me));loadForm();state.tab='today';state.inbox=false;top0();toast(students[state.me].name+'さんの画面を開きました');break;
+   case 'saveLesson':{const t=+v,r={};['quiz','ans','ok','mini','memo'].forEach(k=>{r[k]=val('l'+k+'-'+t).trim();delete state.form['l'+k+'-'+t]});keepForm();db.lessons[t]=r;toast(`第${t}時の記録を保存しました`);break}
+   case 'lPick':state.form.lSel=v;keepForm();top0();break;
+   case 'zoom':state.zoom=+el.dataset.id;break;
+   case 'unzoom':state.zoom=null;break;
+   case 'tImgDel':clearForm('tImgData');break;
+   case 'planRow':state.planSel=+el.dataset.i;break;
+   case 'assign':{const k=students[+el.dataset.i],id=val('ch-'+k.id);if(id&&!k.challenges.includes(id)){k.challenges.push(id);clearForm('ch-'+k.id);send(k.id,`⭐ 先生からチャレンジ「${CH.find(c=>c.id===id).title}」がとどきました。②学習で見てね`);toast(k.name+'さんに渡しました')}break}
+   case 'role':{const k=students[+el.dataset.i];k.teacherRole=!k.teacherRole;if(k.teacherRole)send(k.id,'🎓 きょうは先生役をおねがいします。「こまった」の友だちを助けてね');break}
+   case 'tSel':state.tSel=+el.dataset.i;break;
+   case 'stamp':case 'stampTxt':{const k=students[+el.dataset.i],r=k.refl[k.refl.length-1],t=a==='stamp'?v:val('tc-'+k.id).trim();if(!t)return;
+     r.tc=t;if(a==='stampTxt')clearForm('tc-'+k.id);send(k.id,`💬 第${r.t}時の振り返りに先生から：${t}`);toast(k.name+'さんに送りました');break}
+  }
+  render();
+}
+/* 操作の直前に最新を読み、変わったときだけ保存して、ほかの画面へ知らせる */
+function run(el){pull();act(el);if(save())markSeen()}
+document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(el)run(el)});
+/* Enter で決定（日本語入力の変換中は反応しない） */
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter'||e.isComposing||e.keyCode===229)return;
+  const go=e.target.dataset?.enter;if(!go)return;
+  e.preventDefault();
+  if(go.startsWith('#')){document.querySelector(go)?.focus();return}
+  const id=e.target.dataset.id,i=e.target.dataset.i;
+  const btn=document.querySelector(`button[data-act="${go}"]${id?`[data-id="${id}"]`:''}${i?`[data-i="${i}"]`:''}`);
+  if(btn)run(btn);
+});
+/* 写真は長い辺を720pxにちぢめてJPEGにする（保存の容量と通信を軽くするため） */
+function shrink(file){return new Promise((ok,ng)=>{const img=new Image(),u=URL.createObjectURL(file);
+  img.onload=()=>{const k=Math.min(1,720/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
+   c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL('image/jpeg',.7))};
+  img.onerror=()=>{URL.revokeObjectURL(u);ng()};img.src=u})}
+document.addEventListener('change',e=>{
+  const el=e.target;
+  if(el.type==='file'){const f=el.files?.[0];if(!f)return;shrink(f).then(d=>{state.form.tImgData=d;keepForm();render()}).catch(()=>toast('この写真は読みこめませんでした'));return}
+  if(el.id){state.form[el.id]=el.value;keepForm()}
+  if(el.dataset?.chg==='lSel'){render();return}
+  const c=el.dataset?.chg;if(!c)return;
+  if(c==='plan'){pull();students[state.me].plan[+el.dataset.t]=+el.value;students[state.me].planSaved=false;save();render()}
+  if(c==='tipFilter'&&el.value!==''){state.tipFilter=el.value;render()}
+});
+document.addEventListener('input',e=>{
+  const id=e.target.id;if(!id)return;
+  state.form[id]=e.target.value;keepForm();
+  if(id==='gHow'){const t=composeAtt(students[state.me],e.target.value,fv('gOther',students[state.me].gOther));document.getElementById('gPrev').textContent=t||'上でえらぶと、ここに文ができます';document.getElementById('mAtt').innerHTML=meter(conc(t))}
+  if(/^(rPlus|rMinus|rNext|ifFocus|ifLost|ifLate|gOther)$/.test(id))render();
+});
+/* 「ひらく」の開け閉めを覚えておく */
+document.addEventListener('toggle',e=>{const k=e.target.dataset?.open;if(k)state.open[k]=e.target.open},true);
+/* ほかの画面（タブ・ウィンドウ）が保存したら、すぐ描き直す */
+window.addEventListener('storage',e=>{if(e.key===STORE&&pull()){announce();render()}});
+/* 「〇分前」の表示を1分ごとに更新 */
+setInterval(()=>{if(document.visibilityState==='visible')render()},60000);
+
+if(!pull())save();
+markSeen();loadForm();
+render();
+</script>
+</html>
+<div id="taiken-bar" style="position:fixed;left:8px;bottom:8px;z-index:2147483000;display:flex;flex-wrap:wrap;align-items:center;gap:6px;max-width:calc(100vw - 16px);background:#FFF3C4;color:#4A3200;border:2px solid #C98A00;border-radius:12px;padding:4px 6px 4px 10px;font:700 12px/1.4 system-ui,sans-serif;box-shadow:0 2px 6px rgba(0,0,0,.2)">
+<span>体験版(架空のデータ・どこにも送りません)</span>
+<button type="button" id="taiken-reset" style="font:inherit;border:1px solid #C98A00;background:#fff;color:#4A3200;border-radius:999px;padding:1px 9px;cursor:pointer">はじめにもどす</button>
+<a href="../../apps.html#susumi" style="color:#4A3200">説明へ</a>
+<button type="button" id="taiken-hide" aria-label="この帯をたたむ" style="font:inherit;border:0;background:none;color:#4A3200;cursor:pointer">×</button></div>
+<script>(function(){var b=document.getElementById('taiken-bar');document.getElementById('taiken-hide').onclick=function(){b.style.display='none';};
+document.getElementById('taiken-reset').onclick=function(){if(!confirm('体験版で入れたデータを消して、はじめの状態にもどします。よろしいですか?'))return;Promise.resolve(window.__taikenReset&&window.__taikenReset()).then(function(){location.hash='';location.reload();});};})();</script>

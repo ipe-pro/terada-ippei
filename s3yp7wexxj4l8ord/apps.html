@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>作ったアプリ | 寺田 一平</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="index.html">寺田 一平</a>
+    <nav class="main" aria-label="主要ページ">
+      <ul>
+        <li><a href="index.html">トップ</a></li>
+        <li><a href="apps.html" aria-current="page">作ったアプリ</a></li>
+        <li><a href="research.html">研究・実践</a></li>
+        <li><a href="index.html#contact">連絡先</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="crumb"><a href="index.html">トップ</a> / 作ったアプリ</p>
+  <div class="page-head">
+    <p class="eyebrow">APPS</p>
+    <h1>作ったアプリ</h1>
+    <p class="sec-lead">どれも、自分の学級で「こうなったらいいのに」と思ったことから作りました。アプリごとに<b>目的・背景・効果</b>をまとめ、すぐ下から<b>体験版</b>を開けます。学級で使っているもの(週案ナビ・うちゅうがっこう・クラスミッション)は効果を検証中です。まだ学級で使っていないものは「期待している効果」として書いています。</p>
+    <div class="legend" style="margin-top:12px">
+      <span><span class="chip ok">学級で使用中</span></span>
+      <span><span class="chip try">試作</span> 手元で試している段階</span>
+      <span><span class="chip plan">構想</span> これから作る</span>
+    </div>
+    <nav class="toc" aria-label="アプリの目次">
+      <a href="#shuuan">週案ナビ</a><a href="#mainichi">グリンピースさんの まいにち</a><a href="#uchu">うちゅうがっこう</a><a href="#tsuki">つきの くんれん</a><a href="#mission">クラスミッション</a><a href="#sansu">さんすう ふりかえり</a><a href="#touban">当番報告</a><a href="#gakkyukai">学級会</a><a href="#toi">問いコンパス</a><a href="#susumi">すすみノート</a><a href="#museum">クラス美術館</a><a href="#eikaiwa">英会話AI</a>
+    </nav>
+  </div>
+
+  <p class="note">体験版について:すべて架空のデータで動きます。入力した内容はその端末のブラウザの中だけに残り、外には送りません(体験版は、このサイトの外への通信と、本物のフォルダへの保存を止めてあります。同じブラウザで本番のアプリを使っていても、記録はまざりません)。画面左下の「はじめにもどす」で、試したデータを消せます。実際の学級で使うときは、学校のルールに沿って管理職の確認を得てから使います。</p>
+
+  <!-- ===== 教師用 ===== -->
+  <article class="detail" id="shuuan">
+    <h2>みんなの週案ナビ <span class="chip ok">学級で使用中(試行)</span></h2>
+    <p class="muted small">教師用 ・ 校務(週案・進度・学級だより)</p>
+    <div class="why">
+      <div><b>目的</b>学校の行事予定と年間指導計画から、週案・進度表・学級だよりの下書きを自動でつくり、担任のスケジュール管理をひとつにまとめて軽くする。</div>
+      <div><b>背景</b>週案・進度・学級だよりは、同じ予定を何度も別の書類に書き写す仕事でした。行事で時数がずれるたびに直す手間も大きく、「全部を100%で」が続かない。子どもと向き合う時間をつくるために、まずここを減らしたいと考えました。</div>
+      <div class="eff"><b>効果(検証中)</b>2学期は1・2年の4学級で試行しています。週案・進度・学級だよりにかかる時間がどれだけ減るか、時数のずれに早く気づけるかを確かめています。期待しているのは、書き写しの仕事がなくなり、子どもと向き合う時間や授業準備の時間が増えること。</div>
+    </div>
+    <div class="feat">
+      <div class="now"><span class="chip ok">いまできること</span><ul>
+        <li>行事予定と年間指導計画から、1週間の週案を自動で下書き。行事の週は「金曜は遠足で6時間行事」のように文で頼むと直る</li>
+        <li>単元の進み具合(実施時数と目安)、学年での比較、時数集計</li>
+        <li>学級だより:予定・持ち物・お知らせを様式に入れ、メモから Copilot への依頼文をつくる。<b>先生の過去の文(お手本)に合わせて、記号・行の分け方・字数をそろえる</b></li>
+        <li>時数集計:教科のほか、行事・児童会のコマも数える</li>
+        <li>しめきりのリマインダー、管理職・教務主任の画面</li></ul></div>
+      <div class="future"><span class="chip plan">構想</span><ul><li>3学期から、ほかの学年にも広げる</li><li>学校の Microsoft 365 でのログイン版(申請中)。タブレットからも使えるように</li><li>学年・学校での共有と、昨年度の記録の活用</li></ul></div>
+    </div>
+    <div class="trial"><a class="btn" href="demo/shuuan/index.html" target="_blank" rel="noopener">体験版をひらく</a>
+      <p>架空の学校(4学級)のデータで動きます。左上の「役割」で 担任/学年の先生/管理職/教務主任 を切りかえると、それぞれの画面を試せます。</p></div>
+  </article>
+
+  <!-- ===== 1年生・児童 ===== -->
+  <article class="detail" id="mainichi">
+    <h2>グリンピースさんの まいにち <span class="chip try">試作</span></h2>
+    <p class="muted small">1年生 ・ 国語・算数・音楽 ・ 児童が使う</p>
+    <div class="why">
+      <div><b>目的</b>クラスのキャラクター「グリンピースさん」の毎日の困りごとを助けながら、1年間の学習を総復習する。</div>
+      <div><b>背景</b>1年生にとって、復習は「やらされる」ものになりがち。学級のキャラクターと物語の世界観で、自分から取り組みたくなる「しかけ」(情意的方略)をつくりたいと考えました。</div>
+      <div class="eff"><b>期待している効果</b>学級のキャラクターの世界観で、復習に自分から取り組む子が増える。休み時間や家でも、遊ぶ感覚で1年間の学習をくり返せる。「じこベスト」で、自分の伸びを楽しめる。</div>
+    </div>
+    <div class="feat">
+      <div class="now"><span class="chip ok">いまできること</span><ul>
+        <li>まちのステージ(あさの したく・がっこうの じかん・おかいもの)を進み、最後に「うちゅうじん」とたたかう</li>
+        <li>1回5分・10問。答えに合わせてレベルが変わる。AIで作った声で問題を読み上げる</li>
+        <li>結果は得点と「じこベスト」だけ。ランキングや他の子との比較はない</li></ul></div>
+      <div class="future"><span class="chip plan">構想</span><ul><li>応用編・ステージの追加</li></ul></div>
+    </div>
+    <div class="trial"><a class="btn" href="demo/mainichi/index.html" target="_blank" rel="noopener">体験版をひらく</a>
+      <p>ステージ1〜3と「うちゅうじんと たたかえ!」まで遊べます。音が出ます。</p></div>
+  </article>
+
+  <article class="detail" id="uchu">
+    <h2>スピードさんすう うちゅうがっこう <span class="chip ok">学級で使用中</span></h2>
+    <p class="muted small">1年生 ・ 算数(暗算) ・ 児童が使う</p>
+    <div class="why">
+      <div><b>目的</b>たし算・ひき算の暗算を、速く・正しくできるようにする。他の子とではなく「前の自分」と比べて、伸びを実感できるようにする。</div>
+      <div><b>背景</b>計算カードは、速い子と遅い子の差が見えやすく、苦手な子ほど意欲をなくしがち。秒数を出さずゲージで比べ、宇宙の世界観とごほうびで、毎日少しずつ続けられる形にしました。ネット接続なしで動きます。</div>
+      <div class="eff"><b>効果(検証中)</b>いま、アプリを使う学級と使わない学級をくらべて、1分間テスト(事前・中間・事後)と顔マークのアンケートで効果を確かめています。期待しているのは、たし算・ひき算の暗算が速く正確になること、苦手な子も「前の自分より速くなった」と感じて続けられること、作った人以外の先生でも導入して使えること。</div>
+    </div>
+    <div class="feat">
+      <div class="now"><span class="chip ok">いまできること</span><ul>
+        <li>星をめぐるフライトで暗算。速く答えるほど燃料がたまり、遠くへ飛ぶ</li>
+        <li>「うちゅうせん ダッシュ」:自己ベストの線が出る(他の子とは比べない)</li>
+        <li>なかま・アイテム・基地づくりのごほうび。式ごとの「ほしぞら」で得意・苦手が見える</li>
+        <li>先生用:制限時間の倍率、記録の書き出し、研究用の記録(ID を入れた端末だけ)</li></ul></div>
+      <div class="future"><span class="chip plan">構想</span><ul><li>2学期末に中間、2月に事後のテスト。もう1学級でも使い始める</li><li>結果を論文・実践報告にまとめて発表する</li></ul></div>
+    </div>
+    <div class="trial"><a class="btn" href="demo/uchu/index.html" target="_blank" rel="noopener">体験版をひらく</a>
+      <p>「タップして しゅっぱつ!」から始めます。先生用の「おとなメニュー」は、ホームのタイトル文字を3秒長押しで開きます。</p></div>
+  </article>
+
+  <article class="detail" id="tsuki">
+    <h2>つきの くんれん ステーション <span class="chip try">試作</span></h2>
+    <p class="muted small">1年生 ・ 算数(いくつと いくつ) ・ 児童が使う</p>
+    <div class="why">
+      <div><b>目的</b>「5は いくつと いくつ」「10は いくつと いくつ」(数の合成・分解)を、くり上がり・くり下がりの土台として、すぐに言えるようにする。</div>
+      <div><b>背景</b>うちゅうがっこうで、くり上がりのある計算で止まる子が多いことに気づきました。その手前の「10の まとまり」を、短い時間でくり返せる姉妹アプリとして作りました。</div>
+      <div class="eff"><b>期待している効果</b>10の合成・分解が速くなり、くり上がり・くり下がりのある計算でつまずく子が減る。「前の じぶんより はやく」で、短い練習を毎日続けられる。</div>
+    </div>
+    <div class="feat">
+      <div class="now"><span class="chip ok">いまできること</span><ul>
+        <li>ドッキング(5・10・6〜9は いくつと いくつ)、はんのう テスト(1分で何問)、パーツ さがし(あわせて10)、まんタン たしざん</li>
+        <li>マスターランプで、できるようになった組み合わせが見える</li></ul></div>
+      <div class="future"><span class="chip plan">構想</span><ul><li>学級で試し、うちゅうがっこうと記録をつなぐ</li></ul></div>
+    </div>
+    <div class="trial"><a class="btn" href="demo/tsuki/index.html" target="_blank" rel="noopener">体験版をひらく</a>
+      <p>「おすすめ」から始めると、5→10→6〜9 の順に進みます。</p></div>
+  </article>
+
+  <article class="detail" id="mission">
+    <h2>ふりかえり クラスミッション <span class="chip ok">学級で使用中</span></h2>
+    <p class="muted small">1年生 ・ 学級活動 ・ 児童(入力)・教師(確認)</p>
+    <div class="why">
+      <div><b>目的</b>学級目標に向けた小さな目標(クラスミッション)を、毎日短くふり返る。</div>
+      <div><b>背景</b>学級目標は、掲げたまま「飾り」になりがちです。1年生でも1分でふり返れる形にして、目標→行動→ふり返り のサイクル(自己調整)を毎日まわしたいと考えました。</div>
+      <div class="eff"><b>効果(検証中)</b>毎日の自己評価(4段階)のクラス平均と回答率の変化、ミッションに向かう子どもの姿を記録しています。期待しているのは、学級目標が毎日の行動につながり、「言われなくても気づいて動ける」子が増えること。</div>
+    </div>
+    <div class="feat">
+      <div class="now"><span class="chip ok">いまできること</span><ul>
+        <li>キャラクターと森を進みながら、①目標に対してどうだったか ②そのときの気持ち ③次はどうしたいか をふり返る</li>
+        <li>「ほし」と「みんなの あしあと」で、学級全体の取り組みが見える(だれが何を選んだかは出ない)</li>
+        <li>先生の画面:ミッションの設定、集計</li></ul></div>
+      <div class="future"><span class="chip plan">構想</span><ul><li>子どものタブレットの答えを、学校の Microsoft 365 を通して先生のパソコンの Excel に日付ごとに集める</li><li>状況に合わせた声かけの表示(決まった文から選ぶ方式)</li></ul></div>
+    </div>
+    <div class="trial"><a class="btn" href="demo/mission/index.html" target="_blank" rel="noopener">体験版をひらく</a>
+      <p>架空の30人・10日分のデータが入っています。先生の画面も開けます。</p></div>
+  </article>
+
+  <article class="detail" id="sansu">
+    <h2>さんすう ふりかえりボード <span class="chip try">試作</span></h2>
+    <p class="muted small">低学年 ・ 算数 ・ 児童(入力)・教師(確認)</p>
+    <div class="why">
+      <div><b>目的</b>算数の練習を4段階(教科書の問題/ドリル/プリント/ドリルパーク)から自分で選び、「今日はどこまで頑張るか」を決めてふり返る。</div>
+      <div><b>背景</b>同じ問題を全員で同じだけ解く授業では、速い子は待ち、ゆっくりの子は追われます。1年生でも「自分で選ぶ」経験を積めるよう、選択肢と ふり返りを すべて選択式にしました。</div>
+      <div class="eff"><b>期待している効果</b>練習の量と難しさを自分で選ぶ経験を、1年生から積み重ねられる。「前回より進んだ」をふり返ることで、次のめあてを自分で決められるようになる。</div>
+    </div>
+    <div class="feat">
+      <div class="now"><span class="chip ok">いまできること</span><ul>
+        <li>6つの質問にすべて選択式で答える(やったこと・うまくいった理由・むずかしかった理由・気持ち・次のちょうせん・次にがんばること)</li>
+        <li>「みんなの あしあと」は学級全体の集計だけ</li>
+        <li>教室の掲示「きょうは どこまで やる?」もセット</li></ul></div>
+      <div class="future"><span class="chip plan">構想</span><ul><li>伸びが止まったときは励まし、自己ベストのときはほめる声かけ</li></ul></div>
+    </div>
+    <div class="trial"><a class="btn" href="demo/sansu/index.html" target="_blank" rel="noopener">体験版をひらく</a>
+      <p>架空の30人・10日分のデータが入っています。</p></div>
+  </article>
+
+  <article class="detail" id="touban">
+    <h2>みんながグリンピースさん(当番報告) <span class="chip try">試作</span></h2>
+    <p class="muted small">1年生 ・ 当番活動 ・ 児童・教師</p>
+    <div class="why">
+      <div><b>目的</b>当番活動の「やったよ」を、ハンコとカレンダーで見えるようにする。</div>
+      <div><b>背景</b>当番は「忘れた」「やったか分からない」が毎日起き、確認と声かけに時間がかかっていました。子どもが自分で報告し、続けたことが目に見えると、言われなくても動く姿につながると考えました。</div>
+      <div class="eff"><b>期待している効果</b>当番の「忘れた」が減り、先生の確認と声かけの時間が減る。続けた日が見えることで、言われなくても自分から動く姿につながる。</div>
+    </div>
+    <div class="feat">
+      <div class="now"><span class="chip ok">いまできること</span><ul>
+        <li>自分の当番を選び、終わったら「やったよ」を押す</li>
+        <li>ハンコがたまり、続けた日がカレンダーで見える。ミッションとごほうび</li></ul></div>
+      <div class="future"><span class="chip plan">構想</span><ul><li>学級全体の見える化(だれが、は出さない)</li></ul></div>
+    </div>
+    <div class="trial"><a class="btn" href="demo/touban/index.html" target="_blank" rel="noopener">体験版をひらく</a>
+      <p>架空の児童(7番)として操作します。連続3日目・5日目・10日目の画面も試せます。</p></div>
+  </article>
+
+  <article class="detail" id="gakkyukai">
+    <h2>学級会アプリ <span class="chip try">試作</span></h2>
+    <p class="muted small">教師・児童 ・ 学級活動</p>
+    <div class="why">
+      <div><b>目的</b>議題・提案理由・話し合いの柱を設定し、子どもの意見を集めて整理し、学級会を進めやすくする。</div>
+      <div><b>背景</b>1年生の学級会は、意見を出すのも、出た意見を見比べるのも難しい。声で意見を入れ、同じ意見をまとめて見られるようにすれば、低学年でも「話し合って決める」経験ができると考えました。</div>
+      <div class="eff"><b>期待している効果</b>発言が苦手な子も意見を出せる。意見が一覧で見えるので、比べて決める話し合いになる。先生の板書・集計の手間が減る。</div>
+    </div>
+    <div class="feat">
+      <div class="now"><span class="chip ok">いまできること</span><ul>
+        <li>先生用:議題・柱・名簿の設定、ひとりずつ/表で意見を入力、一覧・集計、ふり返り、保存</li>
+        <li>子ども用:自分の名前を押して、声で意見を入れる。みんなの意見を見る(同じ意見をまとめる)</li>
+        <li>先生用の画面から、子ども用のファイルを書き出せる</li></ul></div>
+      <div class="future"><span class="chip plan">構想</span><ul><li>子どもの端末からの意見を、先生の画面に集める</li></ul></div>
+    </div>
+    <div class="trial"><a class="btn" href="demo/gakkyukai/index.html" target="_blank" rel="noopener">先生用をひらく</a><a class="btn ghost" href="demo/gakkyukai-kodomo/index.html" target="_blank" rel="noopener">子ども用をひらく</a>
+      <p>架空の10人と議題「クラスで びじゅつかんを ひらこう」が入っています。声の入力は、ブラウザの音声認識を使います(Edge・Chrome)。</p></div>
+  </article>
+
+  <!-- ===== 高学年 ===== -->
+  <article class="detail" id="toi">
+    <h2>問いコンパス <span class="chip try">試作</span></h2>
+    <p class="muted small">高学年 ・ 社会 ・ 児童・教師</p>
+    <div class="why">
+      <div><b>目的</b>社会科で、資料から要素を出してつなぎ、単元の問いに対する自分の考えを深める。</div>
+      <div><b>背景</b>6年社会の自由進度学習で、子どもが「何を調べればよいか」「調べたことをどうつなぐか」で止まる姿を多く見ました。考えの道すじを見える形にし、先生が手の止まっている子にすぐ気づけるようにしたいと考えました。</div>
+      <div class="eff"><b>期待している効果</b>資料を根拠にした説明が増える。まとめの書き直しで考えが深まる過程が見える。先生は、支援が必要な子と、評価の根拠をすぐに見つけられる。</div>
+    </div>
+    <div class="feat">
+      <div class="now"><span class="chip ok">いまできること</span><ul>
+        <li>要素カードと線つなぎ(「だから」など)、まとめの書き直しの変化</li>
+        <li>先生の画面:進み具合、手が止まっている子の印、評価案づくりの補助</li>
+        <li>声かけは決まった規則で出す(生成AIにはつないでいない)</li></ul></div>
+      <div class="future"><span class="chip plan">構想</span><ul><li>端末どうしでの共有(保存先を決めてから)</li></ul></div>
+    </div>
+    <div class="trial"><a class="btn" href="demo/toi/index.html" target="_blank" rel="noopener">体験版をひらく</a>
+      <p>右上の「使う人」で先生と児童(架空の8人)を切りかえます。タブを2つ開いて片方を先生にすると、操作がすぐ反映されます。</p></div>
+  </article>
+
+  <article class="detail" id="susumi">
+    <h2>すすみノート <span class="chip try">試作</span></h2>
+    <p class="muted small">高学年 ・ 算数(単元内自由進度学習) ・ 児童・教師</p>
+    <div class="why">
+      <div><b>目的</b>単元内自由進度学習で、一人ひとりの進み具合・考え・計画の見直し・めあてとふり返りの変化を見えるようにする。</div>
+      <div><b>背景</b>昨年度の算数の自由進度学習で、「進度が把握しにくい」「考えていることが見えない」「計画の見直しを支えたい」など7つの困り感が出ました。その一つひとつに対応する機能を試作しています。</div>
+      <div class="eff"><b>期待している効果</b>先生が全員の進度と「こまった」をすぐ把握でき、声をかける相手を選べる。子どもは計画と実際を見比べて、自分で計画を立て直せる。</div>
+    </div>
+    <div class="feat">
+      <div class="now"><span class="chip ok">いまできること</span><ul>
+        <li>クラスの進度マップ、子どもの「いまの自分」(すいすい/もやもや/こまった)</li>
+        <li>単元マップ(評価規準の B/A の姿)、わたしの計画、めあてとふり返りの変化</li>
+        <li>A評価の子への発展課題、教え合いの相手さがし</li></ul></div>
+      <div class="future"><span class="chip plan">構想</span><ul><li>授業で使える本実装(保存・ログイン)</li></ul></div>
+    </div>
+    <div class="trial"><a class="btn" href="demo/susumi/index.html" target="_blank" rel="noopener">体験版をひらく</a>
+      <p>右上で「児童」「教師」を切りかえます。児童は番号を押して、架空の子として使います。</p></div>
+  </article>
+
+  <!-- ===== 構想 ===== -->
+  <article class="detail" id="museum">
+    <h2>クラス美術館 <span class="chip try">試作(画面の見本)</span></h2>
+    <p class="muted small">児童・教師・保護者 ・ 図工・書写・音読劇・ポスター など</p>
+    <div class="why">
+      <div><b>目的</b>1年間の作品を保存して、いつでも見返し、見合ってリアクションできる「クラスの美術館」をつくる。</div>
+      <div><b>背景</b>掲示物は、はがせば終わり、残せばかさばります。作ったときのふり返りと一緒に残せば、あとで「考えの変化」に気づける(自己省察)うえ、「見てもらえる」うれしさが次の制作の意欲になると考えました。</div>
+      <div class="eff"><b>期待している効果</b>作品を見合うことで、友だちのよさに気づく言葉が増える。前の作品と並べて見ることで、自分の成長を実感できる。保護者にも学級の様子が伝わる。</div>
+    </div>
+    <div class="feat">
+      <div class="now"><span class="chip ok">いまできること(見本)</span><ul>
+        <li>ロビー・展示室・作品の詳細・「あのころの わたし」</li>
+        <li>スタンプとひとこと、自分の展示室を飾る、特別展、公開範囲の設定</li></ul></div>
+      <div class="future"><span class="chip plan">構想</span><ul><li>作品の登録(写真・動画)と保存。来年度の実装を目指す</li></ul></div>
+    </div>
+    <div class="trial"><a class="btn" href="demo/museum/index.html" target="_blank" rel="noopener">画面の見本をひらく</a>
+      <p>ダミーの作品だけで、保存はしません。上の「つかう人」で 児童/先生/保護者 を切りかえます。</p></div>
+  </article>
+
+  <article class="detail" id="eikaiwa">
+    <h2>英会話AI <span class="chip plan">構想</span></h2>
+    <p class="muted small">児童 ・ 外国語</p>
+    <div class="why">
+      <div><b>目的</b>単元や習った表現に合わせて育つ、英会話の練習相手をつくる。</div>
+      <div><b>背景</b>外国語の授業では、一人が話せる時間がとても短い。習った表現だけで話せる相手がいれば、はずかしさなく何度でも練習できると考えました。</div>
+      <div class="eff"><b>期待している効果</b>話す回数が増え、ALT や友だちと話すときの自信につながる。使うほどヒントを減らし、最後は人と話すミッションへつなげる。</div>
+    </div>
+    <p class="muted small" style="margin-top:10px">体験版はまだありません。</p>
+  </article>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <span>© 寺田 一平</span>
+    <span><a href="index.html">トップにもどる</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Content-Security-Policy" content="connect-src 'self' blob: data:; form-action 'none'; base-uri 'self'">
+<script>/* 体験版:保存場所を本番と分ける(名前の前に taiken- を付ける)・本物のフォルダにつながない */
+(function(){var P='taiken-';try{var S=Storage.prototype,g=S.getItem,s=S.setItem,r=S.removeItem,k=S.key,L=Object.getOwnPropertyDescriptor(S,'length').get;
+function own(st){var a=[],n=L.call(st);for(var i=0;i<n;i++){var x=k.call(st,i);if(x&&x.indexOf(P)===0)a.push(x.slice(P.length));}return a;}
+S.getItem=function(x){return g.call(this,P+x);};S.setItem=function(x,v){return s.call(this,P+x,v);};S.removeItem=function(x){return r.call(this,P+x);};
+S.key=function(i){var a=own(this);return i<a.length?a[i]:null;};S.clear=function(){var t=this;own(t).forEach(function(x){r.call(t,P+x);});};
+Object.defineProperty(S,'length',{configurable:true,get:function(){return own(this).length;}});
+window.__taikenReset=function(){[localStorage,sessionStorage].forEach(function(st){var n=L.call(st),ks=[];for(var i=0;i<n;i++){var x=k.call(st,i);if(x&&x.indexOf(P)===0)ks.push(x);}ks.forEach(function(x){r.call(st,x);});});};}catch(e){}
+try{var F=IDBFactory.prototype,o=F.open,d=F.deleteDatabase;F.open=function(n,v){return v===undefined?o.call(this,P+n):o.call(this,P+n,v);};F.deleteDatabase=function(n){return d.call(this,P+n);};
+var old=window.__taikenReset;window.__taikenReset=function(){if(old)old();try{if(indexedDB.databases)return indexedDB.databases().then(function(l){l.forEach(function(x){if(x.name&&x.name.indexOf(P)===0)d.call(indexedDB,x.name);});});}catch(e){}};}catch(e){}
+try{delete window.showDirectoryPicker;window.showDirectoryPicker=undefined;}catch(e){}
+})();</script>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#2f5d8a" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <title>【体験版】みんなの週案ナビ</title>
+    <script type="module" crossorigin src="./assets/index-DP1xUUGs.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-0CIcruam.css">
+  </head>
+  <body>
+    <div id="app"><p style="padding:24px;font-family:sans-serif">読み込み中…</p></div>
+  <div id="taiken-bar" style="position:fixed;left:8px;bottom:8px;z-index:2147483000;display:flex;flex-wrap:wrap;align-items:center;gap:6px;max-width:calc(100vw - 16px);background:#FFF3C4;color:#4A3200;border:2px solid #C98A00;border-radius:12px;padding:4px 6px 4px 10px;font:700 12px/1.4 system-ui,sans-serif;box-shadow:0 2px 6px rgba(0,0,0,.2)">
+<span>体験版(架空のデータ・どこにも送りません)</span>
+<button type="button" id="taiken-reset" style="font:inherit;border:1px solid #C98A00;background:#fff;color:#4A3200;border-radius:999px;padding:1px 9px;cursor:pointer">はじめにもどす</button>
+<a href="../../apps.html#shuuan" style="color:#4A3200">説明へ</a>
+<button type="button" id="taiken-hide" aria-label="この帯をたたむ" style="font:inherit;border:0;background:none;color:#4A3200;cursor:pointer">×</button></div>
+<script>(function(){var b=document.getElementById('taiken-bar');document.getElementById('taiken-hide').onclick=function(){b.style.display='none';};
+document.getElementById('taiken-reset').onclick=function(){if(!confirm('体験版で入れたデータを消して、はじめの状態にもどします。よろしいですか?'))return;Promise.resolve(window.__taikenReset&&window.__taikenReset()).then(function(){location.hash='';location.reload();});};})();</script>
+</body>
+</html>

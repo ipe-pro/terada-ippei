@@ -1,0 +1,25 @@
+{
+  "name": "みんなの週案ナビ",
+  "short_name": "週案ナビ",
+  "description": "週案・進度・学級だよりの下書きを、学校の予定と進度から作る担任のためのアプリ(試行版)",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f3f0",
+  "theme_color": "#17706d",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
